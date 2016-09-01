@@ -1,0 +1,64 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	0	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+html	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^<html>$/;"	function	line:2
+head	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^<head>$/;"	function	line:4
+meta	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <meta charset="utf-8">$/;"	function	line:5
+meta	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1, user-scalable=no, width=device-width">$/;"	function	line:6
+meta	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">$/;"	function	line:7
+link	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <link rel="dns-prefetch" href="\/\/sysfreight.net">$/;"	function	line:8
+link	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <link rel="dns-prefetch" href="\/\/www.sysfreight.net">$/;"	function	line:9
+link	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <link rel="stylesheet" href="lib\/bootstrap\/dist\/css\/bootstrap.min.css">$/;"	function	line:10
+link	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <link rel="stylesheet" href="lib\/ionic\/release\/css\/ionic.min.css">$/;"	function	line:11
+link	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <link rel="stylesheet" href="lib\/ion-md-input\/css\/ion-md-input.min.css">$/;"	function	line:12
+link	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <link rel="stylesheet" href="lib\/ionic-filter-bar\/dist\/ionic.filter.bar.css">$/;"	function	line:13
+link	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <link rel="stylesheet" href="lib\/angular-ui-select\/dist\/select.min.css">$/;"	function	line:14
+link	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <link rel="stylesheet" href="css\/iconfont.css">$/;"	function	line:15
+link	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <link rel="stylesheet" href="css\/app.css">$/;"	function	line:16
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="lib\/ionic\/release\/js\/ionic.bundle.min.js"><\/script>$/;"	function	line:17
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="lib\/ngCordova\/dist\/ng-cordova.min.js"><\/script>$/;"	function	line:18
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="lib\/ion-md-input\/js\/ion-md-input.min.js"><\/script>$/;"	function	line:19
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="lib\/ionic-ion-header-shrink\/ionic.headerShrink.js"><\/script>$/;"	function	line:20
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="lib\/ionic-filter-bar\/dist\/ionic.filter.bar.js"><\/script>$/;"	function	line:21
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="cordova.js"><\/script>$/;"	function	line:22
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="lib\/jquery\/dist\/jquery.min.js"><\/script>$/;"	function	line:23
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="lib\/ionic-datepicker\/dist\/ionic-datepicker.bundle.min.js"><\/script>$/;"	function	line:24
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="lib\/angular-messages\/angular-messages.min.js"><\/script>$/;"	function	line:25
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="lib\/ionic-image-lazy-load\/ionic-image-lazy-load.js"><\/script>$/;"	function	line:26
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="lib\/angular-file-upload\/dist\/angular-file-upload.min.js"><\/script>$/;"	function	line:27
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="lib\/angular-ui-select\/dist\/select.min.js"><\/script>$/;"	function	line:28
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="lib\/moment\/min\/moment-with-locales.min.js"><\/script>$/;"	function	line:29
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="lib\/is_js\/is.min.js"><\/script>$/;"	function	line:30
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="lib\/hashmap\/hashmap.js"><\/script>$/;"	function	line:31
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="lib\/signature_pad\/signature_pad.min.js"><\/script>$/;"	function	line:32
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="lib\/urijs\/src\/URI.min.js"><\/script>$/;"	function	line:33
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="lib\/echarts\/dist\/echarts.min.js"><\/script>$/;"	function	line:34
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="js\/qrcode.js"><\/script>$/;"	function	line:35
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="js\/md5.js"><\/script>$/;"	function	line:36
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="js\/base.js"><\/script>$/;"	function	line:37
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="js\/config.js"><\/script>$/;"	function	line:38
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="js\/app.js"><\/script>$/;"	function	line:39
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="js\/services.js"><\/script>$/;"	function	line:40
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="js\/factories.js"><\/script>$/;"	function	line:41
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="js\/directives.js"><\/script>$/;"	function	line:42
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="view\/splash\/splash.js"><\/script>$/;"	function	line:43
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="view\/menu\/menu.js"><\/script>$/;"	function	line:44
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="view\/login\/login.js"><\/script>$/;"	function	line:45
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="view\/main\/main.js"><\/script>$/;"	function	line:46
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="view\/joblisting\/joblisting.js"><\/script>$/;"	function	line:47
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="view\/setting\/setting.js"><\/script>$/;"	function	line:48
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="view\/updateApp\/update.js"><\/script>$/;"	function	line:49
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="view\/reports\/reports.js"><\/script>$/;"	function	line:50
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="view\/agent\/agentjoblisting.js"><\/script>$/;"	function	line:51
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="view\/googleMaps\/googleMaps.js"><\/script>$/;"	function	line:52
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="lib\/ngCordova\/dist\/ng-cordova.js"><\/script>$/;"	function	line:53
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script src="view\/dailycompleted\/dailycompleted.js"><\/script>$/;"	function	line:54
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^  <script src="http:\/\/maps.google.com\/maps\/api\/js?key=AIzaSyAGntBqvv-HLVxBC0MQc8ugh1pc4wWz2AQ"><\/script>$/;"	function	line:55
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^<script>$/;"	function	line:56
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script type="text\/javascript" src="https:\/\/dn-bughd-web.qbox.me\/bughd.min.js" crossOrigin="anonymous"><\/script>$/;"	function	line:59
+script	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <script type="text\/javascript">$/;"	function	line:60
+body	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^<body ng-app="TMS" ng-cloak>$/;"	function	line:72
+ion	C:\Users\Administrator\Desktop\TAN TMS\TanTms\TMS\www\index.html	/^    <ion-nav-view><\/ion-nav-view>$/;"	function	line:73

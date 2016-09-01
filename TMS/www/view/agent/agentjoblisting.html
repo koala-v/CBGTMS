@@ -1,0 +1,44 @@
+<ion-view title="agentJobListing-List">
+    <ion-header-bar align-title="center" no-tap-scroll=true class="bar-positive">
+        <div class="buttons">
+            <button class="button button-icon button-clear ion-android-arrow-back" ng-click="returnMain()"></button>
+        </div>
+        <h1 class="title"><span>Job Listing</span></h1>
+        <div class="buttons">
+            <button class="button button-icon icon ion-ios-search-strong" ng-click="showFilterBar()"></button>
+        </div>
+    </ion-header-bar>
+    <ion-content>
+        <div style="height: 43px;"></div>
+        <div class="list">
+            <ion-list can-swipe="true" tabindex="-1" id="div-list">
+                <div class="row">
+                    <div class="col col-40">
+                        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;JobNo</p>
+                    </div>
+                    <div class="col col-60">
+                        <p>&nbsp;&nbsp;&nbsp;Customer</p>
+                    </div>
+                </div>
+                <ion-item nav-clear menu-close class="item item-icon-right" ng-repeat="job in jobs" ng-click="goAgentDetail(job)">
+                    <div class="row">
+                        <div class="col col-40">
+                            <p><span ng-bind="job.JobNo" style="white-space: normal;">></span></p>
+                            <p><span ng-bind="job.ETA" style="white-space: normal;"></span></p>
+                            <p><span ng-bind="job.Pcs"></span></p>
+                        </div>
+                        <div class="col col-60">
+                            <p><span ng-bind="job.ConsigneeName" style="white-space: normal;">></span></p>
+                            <p><span ng-bind="job.ActualArrivalDate" style="white-space: normal;">></span></p>
+                            <p><span ng-bind="job.DeliveryDate" style="white-space: normal;">></span></p>
+                        </div>
+                    </div>
+                </ion-item>
+            </ion-list>
+        </div>
+        <div ng-if="jobs !== undefined && !jobs.length" class="item">
+            <h2>&nbsp;&nbsp;<span>No Results</span></h2>
+
+        </div>
+    </ion-content>
+</ion-view>

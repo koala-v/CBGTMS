@@ -1,0 +1,31 @@
+{
+  "name": "TMS",
+  "private": "true",
+  "dependencies": {
+    "ionic": "driftyco/ionic-bower#master",
+    "angular-ui-select": "^0.18.0",
+    "ngCordova": ">=0.1.23-alpha",
+    "jquery": ">=2.1.4",
+    "ion-md-input": "^1.0.4",
+    "ionic-datepicker": "^1.1.0",
+    "ionic-ion-header-shrink": "*",
+    "ionic-filter-bar": "^1.1.1",
+    "angular-messages": ">=1.4.7",
+    "moment": "^2.11.2",
+    "is_js": "^0.7.6",
+    "signature_pad": "^1.5.3",
+    "ionic-image-lazy-load": "ion-image-lazy-load#*",
+    "angular-file-upload": "^2.2.0",
+    "hashmap": "^2.0.5",
+    "bootstrap": "^3.3.6",
+    "urijs": "uri.js#^1.18.1",
+    "echarts": "^3.2.1",
+    "ionic-timepicker": "^0.5.1"
+  },
+  "resolutions": {
+    "ionic": ">=0.9.27",
+    "angular": "1.5.3",
+    "angular-animate": "1.5.3",
+    "angular-sanitize": "1.5.3"
+  }
+}

@@ -1,0 +1,39 @@
+<ion-view title="JobListing-List">
+    <ion-header-bar align-title="center" no-tap-scroll=true class="bar-positive">
+        <div class="buttons">
+            <button class="button button-icon button-clear ion-android-arrow-back" ng-click="returnMain()"></button>
+        </div>
+        <h1 class="title"><span>Job Listing</span></h1>
+        <div class="buttons">
+            <button class="button button-icon icon ion-ios-search-strong" ng-click="showFilterBar()"></button>
+        </div>
+    </ion-header-bar>
+    <ion-content>
+        <div style="height: 43px;"></div>
+        <div class="list">
+            <ion-list can-swipe="true" tabindex="-1" id="div-list">
+                <ion-item nav-clear menu-close class="item item-icon-right" ng-repeat="job in jobs" ng-click="gotoDetail(job)">
+                    <div class="row" ng-class="{'s-green': job.status.success, 's-red': job.status.failed}">
+                        <div class="col col-50">
+                            <p><span ng-bind="job.DCFlagWithPcsUom"></span>&nbsp;&nbsp;</p>
+                            <p><span ng-bind="job.time"></span</p>
+                          <p>  <span ng-bind="job.PostalCode"></span></p>
+                        </div>
+                        <div class="col col-50">
+                            <p><span ng-bind="job.customer.name" style="    white-space: normal;"></span></p>
+                            <p><span ng-bind="job.customer.address" style="    white-space: normal;"></span></p>
+                        </div>
+                        <i class="icon iconfont ion-android-done" ng-if="job.status.success" style="right:26px;"></i>
+                        <i class="icon iconfont ion-android-refresh" ng-if="job.status.inprocess" style="right:26px;"></i>
+                        <i class="icon iconfont ion-android-arrow-dropleft" style="right:2px;"></i>
+                    </div>
+
+                </ion-item>
+            </ion-list>
+        </div>
+        <div ng-if="jobs !== undefined && !jobs.length" class="item">
+            <h2>&nbsp;&nbsp;<span>No Results</span></h2>
+
+        </div>
+    </ion-content>
+</ion-view>

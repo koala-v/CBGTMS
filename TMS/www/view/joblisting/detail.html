@@ -1,0 +1,125 @@
+<ion-view title="JobListing-Detail">
+    <ion-header-bar align-title="center" no-tap-scroll=true class="bar-positive">
+        <div class="buttons">
+            <button class="button button-icon button-clear ion-android-arrow-back" ng-click="returnList()"></button>
+        </div>
+        <h1 class="title">Job - {{Detail.Tobk1.DCFlag}} : {{Detail.Tobk1.JobNo}} </h1>
+    </ion-header-bar>
+    <ion-content>
+        <div style="height: 43px;"></div>
+        <div class="card">
+            <div class="button-bar">
+                <a class="button" ng-href="tel:{{Detail.Tobk1.PhoneNumber}}">
+                    <!-- <a class="button" ng-href="tel:0123456789010"> -->
+                    CALL
+                </a>
+                <button class="button" ng-click="showGoogleMaps()">
+                    MAP
+                </button>
+                <button class="button" ng-click="showActionSheet()">
+                    CAMERA
+                </button>
+            </div>
+            <div class="item" style="padding: 0px">
+                <div class="row">
+                    <div class="col ">
+
+                        <p>Pcs: </p>
+                    </div>
+                    <div class="col">
+                        <p><span ng-bind="Detail.Tobk1.PcsUom"></span></span>
+                        </p>
+                    </div>
+                    <div class="col ">
+                        <p>PLT:</p>
+                    </div>
+                    <div class="col">
+                        <p><span ng-bind="Detail.Tobk1.NoOfPallet"></span></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p> Weight:</p>
+                    </div>
+                    <div class="col">
+                        <p><span ng-bind="Detail.Tobk1.Weight"></span></p>
+                    </div>
+                    <div class="col">
+                        <p> Volume:</p>
+                    </div>
+                    <div class="col">
+                        <p><span ng-bind="Detail.Tobk1.Volume"></span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="item" style="padding: 0px">
+                <p>Cargo Description:</p>
+                <!-- <textarea wrap="hard" cols="48px" ng-model="Detail.Tobk1.DescriptionOfGoods1" rows="4" readonly="true">
+                </textarea> -->
+                <p><span ng-bind="Detail.Tobk1.CargoDescription"></span></p>
+
+            </div>
+            <div class="item" style="padding: 0px">
+                <p>Special Instructions:</p>
+                <!-- <textarea wrap="hard" cols="48px" ng-model="Detail.Tobk1.DescriptionOfGoods1" rows="4" readonly="true">
+                </textarea> -->
+                <p><span ng-bind="Detail.Tobk1.DeliveryInstruction1"></span></p>
+
+            </div>
+            <div class="item" style="padding: 0px">
+                <p> Remark:</p>
+                <textarea wrap="hard" cols="48px" ng-model="Detail.Tobk1.Remark" rows="4">
+                </textarea>
+            </div>
+        </div>
+    </ion-content>
+    <ion-footer-bar class="bar-positive">
+        <div class="button-bar">
+            <button class="button icon ion-android-done" ng-click="gotoConfirm()">
+                &nbsp;OK
+            </button>
+            <button class="button icon ion-arrow-return-right" ng-click="cancel()">
+                &nbsp;Cancel
+            </button>
+        </div>
+    </ion-footer-bar>
+    <script id="camera.html" type="text/ng-template">
+        <ion-modal-view>
+            <ion-header-bar class="bar-positive" align-title="center">
+                <div class="buttons">
+                    <button class="button button-icon button-clear ion-android-arrow-back" ng-click="closeModal('camera')"></button>
+                </div>
+                <div class="h1 title">Camera</div>
+            </ion-header-bar>
+            <ion-pane>
+                <div style="height: 43px;"></div>
+                <webcam channel="myChannel" ng-show="capture==null"></webcam>
+                <canvas id="canvas1" width="320" height="480" visble="false"></canvas>
+                <img width="320" ng-src='{{capture}}' ng-show="capture!=null" />
+            </ion-pane>
+            <ion-footer-bar class="bar-positive hide-on-keyboard-open">
+                <div class="button-bar">
+                    <button class="button icon ion-android-refresh" ng-click="reCapture()">
+                        &nbsp;Restore
+                    </button>
+                    <button class="button icon ion-android-camera" ng-click="takePhoto()">
+                    </button>
+                    <button class="button icon ion-arrow-return-right" ng-click="closeModal()" ng-if="capture==null">
+                        &nbsp;Return
+                    </button>
+                    <button class="button icon ion-android-done" ng-click="uploadPhoto()" ng-if="capture!=null">
+                        &nbsp;Done
+                    </button>
+                </div>
+            </ion-footer-bar>
+        </ion-modal-view>
+    </script>
+    <script id="popup-cancel.html" type="text/ng-template">
+        <ion-radio ng-repeat="item in cancelJmjm3s" ng-value="item.value" ng-model="cancelJmjm3sItem.NewItem">
+            {{ item.text }}
+        </ion-radio>
+        <!-- <input ng-model="cancelJmjm3sItem.Remark" type="text" placeholder="Remark" ng-show="cancelJmjm3sItem.NewItem =='Remark'" > -->
+        <textarea wrap="hard" cols="48px" ng-model="cancelJmjm3sItem.Remark" ng-show="cancelJmjm3sItem.NewItem =='Remark'" rows="4">
+        </textarea>
+    </script>
+</ion-view>

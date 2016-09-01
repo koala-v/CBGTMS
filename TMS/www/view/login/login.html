@@ -1,0 +1,43 @@
+<ion-view title="Login">
+    <ion-nav-buttons>
+        <button class="button button-icon icon ion-navicon" menu-toggle="left"></button>
+    </ion-nav-buttons>
+    <ion-nav-title>
+    </ion-nav-title>
+    <ion-nav-bar style="background-color:#fff;">
+    </ion-nav-bar>
+    <ion-content>
+        <div style="height: 44px"></div>
+        <div style="text-align:center; margin-left:auto; margin-right:auto;">
+            <img src="./img/TMS-logo.jpg" width="120px;" height="120px;">
+        </div>
+        <div class="list list-inset">
+            <div class="item item-divider">
+                <span ng-bind="logininfo.strRole"></span>
+            </div>
+            <label class="item item-input" ng-show="funcRoleJuage(1)">
+                <i class="icon ion-android-person placeholder-icon"></i>&nbsp;&nbsp;
+                <input type="text" id="iDriverID" placeholder="Driver ID" required ng-model="logininfo.strdriverID">
+            </label>
+            <label class="item item-input" ng-show="funcRoleJuage(2)">
+                <i class="icon ion-android-person placeholder-icon"></i>&nbsp;&nbsp;
+                <input type="text" id="iCustomerCode" placeholder="Agent ID" required ng-model="logininfo.strAgentID">
+            </label>
+            <label class="item item-input" ng-show="funcRoleJuage(2)">
+                <i class="icon ion-android-lock placeholder-icon"></i>&nbsp;&nbsp;
+                <input type="text" id="iJobNo" placeholder="Password" required ng-model="logininfo.strPassWord">
+            </label>
+            <button class="button button-block button-positive" ng-click="funcLogin(false)">SIGN IN</button>
+        </div>
+        <!-- <div class="list list-inset">
+            <button class="button button-small button-clear button-calm" ng-click="funcChangeRole()">
+                <i class="icon ion-help-circled"></i>&nbsp;&nbsp;Change Role
+            </button>
+        </div> -->
+    </ion-content>
+    <div class="bar bar-footer bar-light">
+        <div class="title">
+            <span class="h6" style="color:#b2b2b2;">&copy; 2016 SysMagic</span>
+        </div>
+    </div>
+</ion-view>
