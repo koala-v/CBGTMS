@@ -441,25 +441,37 @@ app.controller('JoblistingConfirmCtrl', ['ENV', '$scope', '$state', '$stateParam
                 Key: $stateParams.key
             }
         };
-        // var showRaido=function(){
-        //   $scope.OnBehalfOfs = [{
-        //       text: $scope.Confirm.Tobk1.DeliveryToName,
-        //       value: 'CustomerCode'
-        //   }, {
-        //       text: 'On Behalf Of'+$scope.Confirm.Tobk1.DeliveryToName,
-        //       value: 'OnBehalfOf'
-        //   }, ];
-        //   $scope.OnBehalfOfItem = {
-        //       NewItem: 'CustomerCode',
-        //       Remark: '',
-        //   };
-        // };
+        var showRaido = function () {
+
+            $scope.OnBehalfOfs = [{
+                text: $scope.Confirm.Tobk1.DeliveryToName,
+                value: 'CustomerCode'
+            }, {
+                text: 'On Behalf Of ' + $scope.Confirm.Tobk1.DeliveryToName,
+                value: 'OnBehalfOf'
+            }, ];
+            $scope.OnBehalfOfItem = {
+                NewItem: 'CustomerCode',
+                BehalfName: $scope.Confirm.Tobk1.OnBehalfName,
+            };
+
+        };
+        $scope.serverSideChange = function (item) {
+            if ($scope.OnBehalfOfItem.NewItem === item.value) {
+                $scope.Confirm.Tobk1.OnBehalfName = $scope.Confirm.Tobk1.DeliveryToName;
+                if ($scope.OnBehalfOfItem.NewItem === "OnBehalfOf") {
+                    $scope.Confirm.Tobk1.OnBehalfName = $scope.OnBehalfOfItem.BehalfName;
+                }
+            }
+
+        };
 
         $ionicPlatform.ready(function () {
             var strSqlFilter = "key='" + $scope.Confirm.Tobk1.Key + "' ";
             SqlService.Select('Tobk1', '*', strSqlFilter).then(function (results) {
                 if (results.rows.length > 0) {
                     $scope.Confirm.Tobk1 = results.rows.item(0);
+                    showRaido();
                     if ($scope.Confirm.Tobk1.TempBase64 !== null && is.not.empty($scope.Confirm.Tobk1.TempBase64)) {
                         if (is.not.equal(strEemptyBase64, $scope.Confirm.Tobk1.TempBase64)) {
                             $scope.signature = 'data:image/png;base64,' + $scope.Confirm.Tobk1.TempBase64;
@@ -497,7 +509,9 @@ app.controller('JoblistingConfirmCtrl', ['ENV', '$scope', '$state', '$stateParam
                 $scope.signature = sigImg;
             }
         };
+
         $scope.confirm = function () {
+            $scope.Confirm.Tobk1.OnBehalfName = $scope.OnBehalfOfItem.BehalfName;
             $scope.saveCanvas();
             var signature = '';
             if (is.not.null($scope.signature)) {
@@ -516,7 +530,8 @@ app.controller('JoblistingConfirmCtrl', ['ENV', '$scope', '$state', '$stateParam
             var objTobk1 = {
                 StatusCode: 'POD',
                 TempBase64: signature,
-                UpdatedFlag: UpdatedValue
+                UpdatedFlag: UpdatedValue,
+                OnBehalfName: $scope.Confirm.Tobk1.OnBehalfName
             };
             SqlService.Update('Tobk1', objTobk1, Tobk1Filter).then(function (res) {});
             if (UpdatedValue === 'Y') {

@@ -1,5 +1,5 @@
 @echo on
-set target="\\192.168.0.230\wwwroot\app\tms\tan"
+set target="\\192.168.0.230\wwwroot\app\tms\basis"
 xcopy /y/e/s www %target%\www
 pause 
 copy /y index.html %target%

@@ -2,7 +2,7 @@
 var appConfig = angular.module('TMS.config', []);
 appConfig.constant('ENV', {
     website: 'www.sysfreight.net/app/tms/basis',
-     api: 'www.sysfreight.net/apis/tms/basis',
+    api: 'www.sysfreight.net/apis/tms/basis',
     // api: 'http://localhost:62787/',
     // api: 'localhost:55884',
     reset: {

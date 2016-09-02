@@ -6,9 +6,9 @@
         <h1 class="title">Job - Confirmation : {{Confirm.Tobk1.JobNo}}</h1>
     </ion-header-bar>
     <ion-content>
-        <div style="height: 43px;"></div>
+        <div style="height: 30px;"></div>
         <div class="list card">
-            <div class="item">
+            <div class="item" style="padding: 10px">
                 <p>Please sign below to confirm that the</p>
                 <p>following was collected/delivered :</p>
                 <div class="row">
@@ -21,21 +21,20 @@
                 </div>
             </div>
             <div class="item item-body">
-                <div style="height: 4px"></div>
+                <div style="height: 0.5px"></div>
                 <div>
                     <canvas id='signatureCanvas' width="323px" height="140px" style="border: 1px solid black;" ng-show="signature==null"></canvas>
                     <img ng-src='{{signature}}' ng-show="signature!=null" />
                     <a class="button  icon-left iconfont ion-android-refresh button-clear button-positive" ng-click="clearCanvas()">Clear</a>
                 </div>
             </div>
-            <!-- <div>
-              <ion-radio ng-repeat="item in OnBehalfOfs" ng-value="item.value" ng-model="OnBehalfOfItem.NewItem">
-                  {{ item.text }}
-              </ion-radio>
-            <input ng-model="OnBehalfOfItem.Remark" type="text" placeholder="Remark" ng-show="OnBehalfOfItem.NewItem =='Remark'" >
+            <div>
+                <ion-radio ng-repeat="item in OnBehalfOfs" ng-value="item.value" ng-model="OnBehalfOfItem.NewItem" ng-change="serverSideChange(item)">
+                    {{ item.text }}
+                </ion-radio>
+                <input ng-model="OnBehalfOfItem.BehalfName" type="text" placeholder="Name" ng-show="OnBehalfOfItem.NewItem =='OnBehalfOf'">
 
-            </div> -->
-
+            </div>
         </div>
     </ion-content>
     <ion-footer-bar class="bar-positive ">
