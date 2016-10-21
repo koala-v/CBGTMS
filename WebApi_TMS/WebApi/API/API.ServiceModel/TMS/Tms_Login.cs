@@ -33,7 +33,7 @@ namespace WebApi.ServiceModel.TMS
                     if (request.DriverCode != null && request.DriverCode.Length > 0)
 
                     {
-                        strSql = "Select isnull(DriverCode,'') as  DriverCode   From Todr1 Where DriverCode='" + request.DriverCode + "' ";
+                        strSql = "Select isnull(DriverCode,'') as  DriverCode   From Todr1 Where  StatusCode<>'DEL' and DriverCode='" + request.DriverCode + "' ";
                         Result = db.Select<Todr1_Rcbp1>(strSql);
                     }
                     else if (request.BusinessPartyCode != null && request.BusinessPartyCode.Length > 0 && request.PassWord != null && request.PassWord.Length > 0)

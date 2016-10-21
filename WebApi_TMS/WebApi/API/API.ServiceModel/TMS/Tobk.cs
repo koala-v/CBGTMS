@@ -35,7 +35,7 @@ namespace WebApi.ServiceModel.TMS
                 using (var db = DbConnectionFactory.OpenDbConnection("TMS"))
                 {
                     string strSql = "";
-                    strSql = " select BookingNo as 'Key','Tobk1' as TableName, Case JobType when 'CO' then 'Collect' when 'DE' then 'Deliver' when 'TP' then 'Transport' else '' end as DCFlag ,'' as UpdatedFlag ,isnull((cast(TotalPcs as nvarchar(20))+' ' +UomCode),'') as PcsUom ," +
+                    strSql = " select BookingNo as 'Key','Tobk1' as TableName, Case JobType when 'CO' then 'Collection' when 'DE' then 'Delivery' when 'TP' then 'Transport' else '' end as DCFlag ,'' as UpdatedFlag ,isnull((cast(TotalPcs as nvarchar(20))+' ' +UomCode),'') as PcsUom ," +
                        "Case JobType when 'CO' then FromName else ToName END as DeliveryToName ,DeliveryEndDateTime  as TimeFrom ," +
                         "Case JobType when 'CO' then FromAddress1 else ToAddress1 END as DeliveryToAddress1 , " +
                              " Case JobType when 'CO' then FromAddress2 else ToAddress2 END as DeliveryToAddress2 ,Case JobType when 'CO' then FromAddress3 else ToAddress3 END as DeliveryToAddress3 ,Case JobType when 'CO' then FromAddress4 else ToAddress4 END as DeliveryToAddress4 , " +

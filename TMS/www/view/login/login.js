@@ -66,7 +66,7 @@ app.controller('LoginCtrl', ['ENV', '$scope', '$http', '$state', '$stateParams',
                 cordova.plugins.Keyboard.close();
             }
             if (is.equal($scope.logininfo.CurRole, '1')) {
-                if (is.empty($scope.logininfo.strdriverID)) {
+                if (is.empty($scope.logininfo.strdriverID) || is.undefined($scope.logininfo.strdriverID)) {
                     PopupService.Alert(null, 'Please Enter Driver ID.');
                 } else {
                     var objUri = ApiService.Uri(true, '/api/tms/login/check').addSearch('DriverCode', $scope.logininfo.strdriverID);
@@ -150,6 +150,10 @@ app.controller('LoginCtrl', ['ENV', '$scope', '$http', '$state', '$stateParams',
                 $scope.funcLogin();
             }
         });
+
+        // $rootScope.$on( 'logout', function () {
+        // $scope.logininfo.strdriverID="";
+        // } );
 
         $ionicPlatform.ready(function () {
             SqlService.Select('Todr1_Rcbp1', '*').then(function (res) {

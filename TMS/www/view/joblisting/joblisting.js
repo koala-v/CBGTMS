@@ -13,7 +13,7 @@ app.controller('JoblistingListCtrl', ['ENV', '$scope', '$state', '$ionicLoading'
                 PostalCode: objTobk1.PostalCode,
                 customer: {
                     name: objTobk1.DeliveryToName,
-                    address: objTobk1.DeliveryToAddress1 + objTobk1.DeliveryToAddress2 + objTobk1.DeliveryToAddress3 + objTobk1.DeliveryToAddress4
+                    address: objTobk1.DeliveryToAddress1 + "  " + objTobk1.DeliveryToAddress2 + "  " + objTobk1.DeliveryToAddress3 + "  " + objTobk1.DeliveryToAddress4
                 },
                 status: {
                     inprocess: is.equal(objTobk1.StatusCode, 'POD') ? false : true,
@@ -458,7 +458,7 @@ app.controller('JoblistingConfirmCtrl', ['ENV', '$scope', '$state', '$stateParam
         };
         $scope.serverSideChange = function (item) {
             if ($scope.OnBehalfOfItem.NewItem === item.value) {
-                $scope.Confirm.Tobk1.OnBehalfName = $scope.Confirm.Tobk1.DeliveryToName;
+                $scope.Confirm.Tobk1.OnBehalfName = "";
                 if ($scope.OnBehalfOfItem.NewItem === "OnBehalfOf") {
                     $scope.Confirm.Tobk1.OnBehalfName = $scope.OnBehalfOfItem.BehalfName;
                 }
@@ -511,7 +511,12 @@ app.controller('JoblistingConfirmCtrl', ['ENV', '$scope', '$state', '$stateParam
         };
 
         $scope.confirm = function () {
-            $scope.Confirm.Tobk1.OnBehalfName = $scope.OnBehalfOfItem.BehalfName;
+            if ($scope.OnBehalfOfItem.NewItem === 'CustomerCode') {
+                $scope.Confirm.Tobk1.OnBehalfName = "";
+            } else {
+                $scope.Confirm.Tobk1.OnBehalfName = $scope.OnBehalfOfItem.BehalfName;
+            }
+
             $scope.saveCanvas();
             var signature = '';
             if (is.not.null($scope.signature)) {
