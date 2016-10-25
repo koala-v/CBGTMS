@@ -70,6 +70,13 @@ app.controller('JoblistingListCtrl', ['ENV', '$scope', '$state', '$ionicLoading'
                                     if (!hmTobk1.has(objTobk1.Key)) {
                                         SqlService.Insert('Tobk1', objTobk1).then(function (res) {});
                                         getSignature(objTobk1);
+                                    } else {
+                                      var objTobk1RmRemark=objTobk1;
+                                        var Tobk1filter = " Key='" + objTobk1.Key + "'";
+                                          delete objTobk1RmRemark.Remark;
+                                          delete objTobk1RmRemark.Key;
+                                          delete objTobk1.__type;
+                                        SqlService.Update('Tobk1', objTobk1RmRemark, Tobk1filter).then(function (res) {});
                                     }
                                 }
                             }
@@ -285,7 +292,7 @@ app.controller('JoblistingDetailCtrl', ['ENV', '$scope', '$state', '$ionicAction
         };
         $scope.showGoogleMaps = function () {
             $state.go('googleMaps', {}, {});
-        }
+        };
         $scope.uploadPhoto = function () {
             var jsonData = {
                 'Base64': $scope.capture,

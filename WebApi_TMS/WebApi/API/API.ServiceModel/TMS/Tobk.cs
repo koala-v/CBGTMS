@@ -44,7 +44,7 @@ namespace WebApi.ServiceModel.TMS
                              "DriverCode, CONVERT(varchar(20), DeliveryEndDateTime, 112) as FilterTime , " +
                              "Case JobType when 'CO' then 'PC ' + isnull(FromPostalCode, '') else 'PC ' + isnull(ToPostalCode, '') END as PostalCode,NoOfPallet,OnBehalfName,TotalPcs," +
                              " isnull((Case JobType when 'CO' then(select top 1 case isnull(Rcbp1.Handphone1, '') when '' then isnull(Rcbp1.Telephone, '')  else Rcbp1.Handphone1 end   from rcbp1 where rcbp1.BusinessPartyCode = Tobk1.FromCode ) else (select top 1 case isnull(Rcbp1.Handphone1, '') when '' then isnull(Rcbp1.Telephone, '')  else Rcbp1.Handphone1 end   from rcbp1 where rcbp1.BusinessPartyCode = Tobk1.ToCode) End), '')  AS PhoneNumber" +
-                             "  from Tobk1  Where CONVERT(varchar(20),DeliveryEndDateTime ,112)=(select convert(varchar(10),getdate(),112))  and DriverCode ='" + request.DriverCode + "'";
+                             "  from Tobk1  Where CONVERT(varchar(20),ScheduleDate ,112)=(select convert(varchar(10),getdate(),112))  and DriverCode ='" + request.DriverCode + "'";
                     Result = db.Select<Tobk1>(strSql);
                 }
             }
@@ -60,7 +60,7 @@ namespace WebApi.ServiceModel.TMS
                 using (var db = DbConnectionFactory.OpenDbConnection())
                 {
                     string str;
-                    str = " Note = "+ Modfunction.SQLSafeValue(request.Remark) + ",OnBehalfName = " + Modfunction.SQLSafeValue(request.OnBehalfName) + ",StatusCode = 'POD'";
+                    str = " Note = "+ Modfunction.SQLSafeValue(request.Remark) + ",OnBehalfName = " + Modfunction.SQLSafeValue(request.OnBehalfName) + ",StatusCode = 'POD',CompletedFlag='Y'";
                     db.Update(request.TableName,
                            str,
                            " BookingNo='" + request.Key + "'");
