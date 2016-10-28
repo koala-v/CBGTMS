@@ -2,18 +2,18 @@
 app.controller('dailycompletedCtrl', ['ENV', '$scope', '$state', '$ionicPopup', '$cordovaKeyboard', '$cordovaBarcodeScanner', 'ACCEPTJOB_ORM', 'ApiService', '$cordovaSQLite', '$ionicPlatform', 'ionicDatePicker', 'SqlService',
     function (ENV, $scope, $state, $ionicPopup, $cordovaKeyboard, $cordovaBarcodeScanner, ACCEPTJOB_ORM, ApiService, $cordovaSQLite, $ionicPlatform, ionicDatePicker, SqlService) {
         var dataResults = new Array();
-        $scope.DailyCompleted={
-          tobk1s:[]
+        $scope.DailyCompleted = {
+            tobk1s: []
         };
         $scope.Search = {
             CompletedDate: moment(new Date()).format('YYYYMMDD'),
         };
 
-        var getobjTobk1 = function (objTobk1) {
+        var getobjTobk1 = function (objTobk1, i) {
             var jobs = {
                 key: objTobk1.Key,
                 DCFlagWithPcsUom: objTobk1.DCFlag + ' ' + objTobk1.PcsUom,
-                time: checkDatetime(objTobk1.TimeFrom),
+                time: is.equal(objTobk1.AppHideScheduleTime, 'Y') ? checkDatetime(objTobk1.TimeFrom) : 'S/No: ' + (parseInt(i) + 1),
                 PostalCode: objTobk1.PostalCode,
                 customer: {
                     name: objTobk1.DeliveryToName,
@@ -31,7 +31,7 @@ app.controller('dailycompletedCtrl', ['ENV', '$scope', '$state', '$ionicPopup', 
         var ShowDailyCompleted = function () {
             var strSqlFilter = "UpdatedFlag != '' And FilterTime='" + $scope.Search.CompletedDate + "' And DriverCode='" + sessionStorage.getItem("sessionDriverCode") + "'"; // not record
             SqlService.Select('Tobk1', '*', strSqlFilter).then(function (results) {
-              $scope.DailyCompleted.tobk1s=new Array();
+                $scope.DailyCompleted.tobk1s = new Array();
                 if (results.rows.length > 0) {
                     for (var i = 0; i < results.rows.length; i++) {
                         var jobs = getobjTobk1(results.rows.item(i));

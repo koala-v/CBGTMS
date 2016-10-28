@@ -4,12 +4,13 @@ app.controller('JoblistingListCtrl', ['ENV', '$scope', '$state', '$ionicLoading'
         var filterBarInstance = null;
         var dataResults = new Array();
         var hmTobk1 = new HashMap();
+        var getObjTobk1 = function (objTobk1, i) {
 
-        var getObjTobk1 = function (objTobk1) {
             var jobs = {
                 key: objTobk1.Key,
                 DCFlagWithPcsUom: objTobk1.DCFlag + ' ' + objTobk1.PcsUom,
-                time: checkDatetime(objTobk1.TimeFrom),
+                // time: checkDatetime(objTobk1.TimeFrom),
+                time: is.equal(objTobk1.AppHideScheduleTime, 'Y') ? checkDatetime(objTobk1.TimeFrom) : 'S/No: ' + (parseInt(i) + 1),
                 PostalCode: objTobk1.PostalCode,
                 customer: {
                     name: objTobk1.DeliveryToName,
@@ -64,19 +65,20 @@ app.controller('JoblistingListCtrl', ['ENV', '$scope', '$state', '$ionicLoading'
                             if (is.not.empty(results)) {
                                 for (var i = 0; i < results.length; i++) {
                                     var objTobk1 = results[i];
-                                    var jobs = getObjTobk1(objTobk1);
+                                    var jobs = getObjTobk1(objTobk1, i);
                                     dataResults = dataResults.concat(jobs);
                                     $scope.jobs = dataResults;
                                     if (!hmTobk1.has(objTobk1.Key)) {
                                         SqlService.Insert('Tobk1', objTobk1).then(function (res) {});
                                         getSignature(objTobk1);
                                     } else {
-                                      var objTobk1RmRemark=objTobk1;
+                                        var objTobk1RmRemark = objTobk1;
                                         var Tobk1filter = " Key='" + objTobk1.Key + "'";
-                                          delete objTobk1RmRemark.Remark;
-                                          delete objTobk1RmRemark.Key;
-                                          delete objTobk1.__type;
+                                        delete objTobk1RmRemark.Remark;
+                                        delete objTobk1RmRemark.Key;
+                                        delete objTobk1.__type;
                                         SqlService.Update('Tobk1', objTobk1RmRemark, Tobk1filter).then(function (res) {});
+
                                     }
                                 }
                             }
@@ -89,7 +91,7 @@ app.controller('JoblistingListCtrl', ['ENV', '$scope', '$state', '$ionicLoading'
                             if (is.not.empty(results)) {
                                 for (var i = 0; i < results.length; i++) {
                                     var objTobk1 = results[i];
-                                    var jobs = getObjTobk1(results[i]);
+                                    var jobs = getObjTobk1(results[i], i);
                                     dataResults = dataResults.concat(jobs);
                                     $scope.jobs = dataResults;
                                     SqlService.Insert('Tobk1', objTobk1).then(function (res) {});
@@ -106,7 +108,7 @@ app.controller('JoblistingListCtrl', ['ENV', '$scope', '$state', '$ionicLoading'
                 SqlService.Select('Tobk1', '*', strSqlFilter).then(function (results) {
                     if (results.rows.length > 0) {
                         for (var i = 0; i < results.rows.length; i++) {
-                            var objTobk1 = getObjTobk1(results.rows.item(i));
+                            var objTobk1 = getObjTobk1(results.rows.item(i), i);
                             dataResults = dataResults.concat(objTobk1);
                         }
                         $scope.jobs = dataResults;
@@ -204,6 +206,30 @@ app.controller('JoblistingDetailCtrl', ['ENV', '$scope', '$state', '$ionicAction
         $scope.cancelJmjm3sItem = {
             NewItem: 'SenderWithReceiver',
             Remark: '',
+        };
+
+        $scope.refresh = function () {
+            var objUri = ApiService.Uri(true, '/api/tms/tobk1');
+            objUri.addSearch('DriverCode', sessionStorage.getItem("sessionDriverCode"));
+            objUri.addSearch('BookingNo', $scope.Detail.Tobk1.Key);
+            ApiService.Get(objUri, true).then(function success(result) {
+                var results = result.data.results;
+                if (is.not.empty(results)) {
+                    var objTobk1 = results[0];
+                    var objTobk1RmRemark = objTobk1;
+                    var Tobk1filter = " Key='" + objTobk1.Key + "'";
+                    // delete objTobk1RmRemark.Remark;
+                    // delete objTobk1RmRemark.Key;
+                    delete objTobk1.__type;
+                    if ($scope.Detail.Tobk1.UpdateRemarkFlag === 'Y') {
+                        objTobk1RmRemark.Remark = $scope.Detail.Tobk1.Remark;
+                        objTobk1RmRemark.UpdateRemarkFlag = $scope.Detail.Tobk1.UpdateRemarkFlag;
+                    }
+                    $scope.Detail.Tobk1 = objTobk1RmRemark;
+                    SqlService.Update('Tobk1', objTobk1RmRemark, Tobk1filter).then(function (res) {});
+
+                }
+            });
         };
 
         $ionicPlatform.ready(function () {
@@ -424,7 +450,8 @@ app.controller('JoblistingDetailCtrl', ['ENV', '$scope', '$state', '$ionicAction
         $scope.gotoConfirm = function () {
             var Tobk1Filter = "Key='" + $scope.Detail.Tobk1.Key + "' and  TableName='" + $scope.Detail.Tobk1.TableName + "' "; // not record
             var objTobk1 = {
-                Remark: $scope.Detail.Tobk1.Remark
+                Remark: $scope.Detail.Tobk1.Remark,
+                UpdateRemarkFlag: 'Y'
             };
             SqlService.Update('Tobk1', objTobk1, Tobk1Filter).then(function (res) {});
             $state.go('jobListingConfirm', {

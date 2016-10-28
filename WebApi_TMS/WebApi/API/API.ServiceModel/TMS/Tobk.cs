@@ -22,6 +22,7 @@ namespace WebApi.ServiceModel.TMS
         public string TableName { get; set; }
         public string UpdateAllString { get; set; }
         public string DriverCode { get; set; }
+        public string BookingNo { get; set; }
     }
     public class Tobk_Logic
     {
@@ -36,15 +37,19 @@ namespace WebApi.ServiceModel.TMS
                 {
                     string strSql = "";
                     strSql = " select BookingNo as 'Key','Tobk1' as TableName, Case JobType when 'CO' then 'Collection' when 'DE' then 'Delivery' when 'TP' then 'Transport' else '' end as DCFlag ,'' as UpdatedFlag ,isnull((cast(TotalPcs as nvarchar(20))+' ' +UomCode),'') as PcsUom ," +
-                       "Case JobType when 'CO' then FromName else ToName END as DeliveryToName ,DeliveryEndDateTime  as TimeFrom ," +
+                       "Case JobType when 'CO' then isnull(FromName,'') else isnull(ToName,'') END as DeliveryToName ,ScheduleDate  as TimeFrom ," +
                         "Case JobType when 'CO' then FromAddress1 else ToAddress1 END as DeliveryToAddress1 , " +
                              " Case JobType when 'CO' then FromAddress2 else ToAddress2 END as DeliveryToAddress2 ,Case JobType when 'CO' then FromAddress3 else ToAddress3 END as DeliveryToAddress3 ,Case JobType when 'CO' then FromAddress4 else ToAddress4 END as DeliveryToAddress4 , " +
                              "TotalGrossWeight as Weight,TotalVolume As Volume ,isnull(Description, '') as DeliveryInstruction1, '' as DeliveryInstruction2, " +
                              "'' as DeliveryInstruction3,DescriptionOfGoods1 AS CargoDescription,Note as Remark,AttachmentFlag as AttachmentFlag ,isnull(JobNo, '') as JobNo,Case StatusCode When 'POD' then 'POD' Else(Case(Select Top 1 StatusCode from jmjm3 Where JobNo = Tobk1.JobNo Order By LineItemNo DESC) When 'CANCEL' then 'CANCEL' else Tobk1.StatusCode END) END AS StatusCode,'' AS CancelDescription," +
-                             "DriverCode, CONVERT(varchar(20), DeliveryEndDateTime, 112) as FilterTime , " +
-                             "Case JobType when 'CO' then 'PC ' + isnull(FromPostalCode, '') else 'PC ' + isnull(ToPostalCode, '') END as PostalCode,NoOfPallet,OnBehalfName,TotalPcs," +
-                             " isnull((Case JobType when 'CO' then(select top 1 case isnull(Rcbp1.Handphone1, '') when '' then isnull(Rcbp1.Telephone, '')  else Rcbp1.Handphone1 end   from rcbp1 where rcbp1.BusinessPartyCode = Tobk1.FromCode ) else (select top 1 case isnull(Rcbp1.Handphone1, '') when '' then isnull(Rcbp1.Telephone, '')  else Rcbp1.Handphone1 end   from rcbp1 where rcbp1.BusinessPartyCode = Tobk1.ToCode) End), '')  AS PhoneNumber" +
+                             "DriverCode, CONVERT(varchar(20), ScheduleDate, 112) as FilterTime , " +
+                             "Case JobType when 'CO' then 'PC ' + isnull(FromPostalCode, '') else 'PC ' + isnull(ToPostalCode, '') END as PostalCode,NoOfPallet,isnull(OnBehalfName,''),TotalPcs," +
+                             " isnull((Case JobType when 'CO' then(select top 1 case isnull(Rcbp1.Handphone1, '') when '' then isnull(Rcbp1.Telephone, '')  else Rcbp1.Handphone1 end   from rcbp1 where rcbp1.BusinessPartyCode = Tobk1.FromCode ) else (select top 1 case isnull(Rcbp1.Handphone1, '') when '' then isnull(Rcbp1.Telephone, '')  else Rcbp1.Handphone1 end   from rcbp1 where rcbp1.BusinessPartyCode = Tobk1.ToCode) End), '')  AS PhoneNumber ," +
+                             "isnull((select  AppHideScheduleTime  from topa1),'N') as  AppHideScheduleTime ,'' as UpdateRemarkFlag " +
                              "  from Tobk1  Where CONVERT(varchar(20),ScheduleDate ,112)=(select convert(varchar(10),getdate(),112))  and DriverCode ='" + request.DriverCode + "'";
+                    if (request.BookingNo != null && request.BookingNo != "") {
+                        strSql = strSql + "And BookingNo='" + request.BookingNo + "'";
+                    }
                     Result = db.Select<Tobk1>(strSql);
                 }
             }

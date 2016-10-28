@@ -55,6 +55,8 @@ appFactory.factory('TABLE_DB', function () {
             TotalPcs : 'INT',
             PostalCode : 'TEXT',
            CargoDescription	 : 'TEXT',
+           AppHideScheduleTime: 'TEXT',
+           UpdateRemarkFlag:'TEXT',
         },
         Jmjm1: {
             JobNo: 'TEXT',
