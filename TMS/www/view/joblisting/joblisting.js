@@ -255,7 +255,7 @@ app.controller('JoblistingDetailCtrl', ['ENV', '$scope', '$state', '$ionicAction
                 encodingType: Camera.EncodingType.JPEG,
                 //targetWidth: 768,
                 //targetHeight: 1024,
-                mediaType: Camera.MediaType.PICTURE,
+                // mediaType: Camera.MediaType.PICTURE,
                 cameraDirection: Camera.Direction.BACK,
                 //popoverOptions: new CameraPopoverOptions(300, 300, 100, 100, Camera.PopoverArrowDirection.ARROW_ANY),
                 saveToPhotoAlbum: true
