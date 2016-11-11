@@ -10,7 +10,7 @@ app.controller('JoblistingListCtrl', ['ENV', '$scope', '$state', '$ionicLoading'
                 key: objTobk1.Key,
                 DCFlagWithPcsUom: objTobk1.DCFlag + ' ' + objTobk1.PcsUom,
                 // time: checkDatetime(objTobk1.TimeFrom),
-                time: is.equal(objTobk1.AppHideScheduleTime, 'Y') ? checkDatetime(objTobk1.TimeFrom) : 'S/No: ' + (parseInt(i) + 1),
+                time: is.not.equal(objTobk1.AppHideScheduleTime, 'Y') ? checkDatetime(objTobk1.TimeFrom) : 'S/No: ' + (parseInt(i) + 1),
                 PostalCode: objTobk1.PostalCode,
                 customer: {
                     name: objTobk1.DeliveryToName,
@@ -43,7 +43,7 @@ app.controller('JoblistingListCtrl', ['ENV', '$scope', '$state', '$ionicLoading'
 
         var showTobk1 = function () {
             if (!ENV.fromWeb) {
-                if (is.not.equal($cordovaNetwork.getNetwork(), 'wifi')) {
+                if ($cordovaNetwork.isOffline() ) {
                     ENV.wifi = false;
                 } else {
                     ENV.wifi = true;
@@ -404,7 +404,7 @@ app.controller('JoblistingDetailCtrl', ['ENV', '$scope', '$state', '$ionicAction
                             }
                             var UpdatedValue = 'Y';
                             if (!ENV.fromWeb) {
-                                if (is.not.equal($cordovaNetwork.getNetwork(), 'wifi')) {
+                                if ($cordovaNetwork.isOffline()) {
                                     ENV.wifi = false;
                                     UpdatedValue = 'N';
                                 } else {
@@ -558,7 +558,7 @@ app.controller('JoblistingConfirmCtrl', ['ENV', '$scope', '$state', '$stateParam
             }
             var UpdatedValue = 'Y';
             if (!ENV.fromWeb) {
-                if (is.not.equal($cordovaNetwork.getNetwork(), 'wifi')) {
+                if ($cordovaNetwork.isOffline()) {
                     ENV.wifi = false;
                     UpdatedValue = 'N';
                 } else {
@@ -579,6 +579,10 @@ app.controller('JoblistingConfirmCtrl', ['ENV', '$scope', '$state', '$stateParam
                 objUri.addSearch('OnBehalfName', $scope.Confirm.Tobk1.OnBehalfName);
                 objUri.addSearch('Remark', $scope.Confirm.Tobk1.Remark);
                 objUri.addSearch('Key', $scope.Confirm.Tobk1.Key);
+                objUri.addSearch('OnBehalfName', $scope.Confirm.Tobk1.OnBehalfName);
+                objUri.addSearch('JobNo', $scope.Confirm.Tobk1.JobNo);
+                objUri.addSearch('DCDescription', $scope.Confirm.Tobk1.DCFlag);
+  objUri.addSearch('DriverCode', sessionStorage.getItem("sessionDriverCode"));
                 ApiService.Get(objUri, true).then(function success(result) {});
                 var jsonData = {
                     'Base64': $scope.signature,

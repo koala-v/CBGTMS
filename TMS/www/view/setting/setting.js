@@ -46,6 +46,10 @@ app.controller( 'SettingCtrl', [ 'ENV', '$scope', '$state', '$ionicHistory', '$i
             } else {
                 $scope.Setting.WebSiteUrl = ENV.website;
             }
+            // var data = 'website=' + ENV.website +
+            //     '##api=' + ENV.api +
+            //     '##port=' + ENV.port;
+            // console.log(data);
             if ( !ENV.fromWeb ) {
                 var data = 'website=' + ENV.website +
                     '##api=' + ENV.api +

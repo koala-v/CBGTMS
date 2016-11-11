@@ -13,7 +13,7 @@ app.controller('dailycompletedCtrl', ['ENV', '$scope', '$state', '$ionicPopup', 
             var jobs = {
                 key: objTobk1.Key,
                 DCFlagWithPcsUom: objTobk1.DCFlag + ' ' + objTobk1.PcsUom,
-                time: is.equal(objTobk1.AppHideScheduleTime, 'Y') ? checkDatetime(objTobk1.TimeFrom) : 'S/No: ' + (parseInt(i) + 1),
+                time: is.not.equal(objTobk1.AppHideScheduleTime, 'Y') ? checkDatetime(objTobk1.TimeFrom) : 'S/No: ' + (parseInt(i) + 1),
                 PostalCode: objTobk1.PostalCode,
                 customer: {
                     name: objTobk1.DeliveryToName,
@@ -85,7 +85,7 @@ app.controller('dailycompletedCtrl', ['ENV', '$scope', '$state', '$ionicPopup', 
                     var jsonData = {
                         "UpdateAllString": JSON.stringify(dataResults)
                     };
-                    var objUri = ApiService.Uri(true, '/api/tms/aemp1withaido1/update');
+                    var objUri = ApiService.Uri(true, '/api/tms/tobk1/update');
                     ApiService.Post(objUri, jsonData, true).then(function success(result) {
                         // PopupService.Info(null, 'Cancel Success', '').then(function (res) {
                         //     $scope.returnList();
