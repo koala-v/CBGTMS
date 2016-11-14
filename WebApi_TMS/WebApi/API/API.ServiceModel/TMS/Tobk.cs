@@ -66,13 +66,8 @@ namespace WebApi.ServiceModel.TMS
             {
                 using (var db = DbConnectionFactory.OpenDbConnection())
                 {
-                    string str;
-                    str = " Note = "+ Modfunction.SQLSafeValue(request.Remark) + ",OnBehalfName = " + Modfunction.SQLSafeValue(request.OnBehalfName) + ",DeliveryEndDateTime=GETDATE(),StatusCode = 'POD',CompletedFlag='Y'";
-                    db.Update(request.TableName,
-                           str,
-                           " BookingNo='" + request.Key + "'");
                     string strJobNo = request.JobNo;
-                    if (strJobNo != "")
+                    if (strJobNo != "" && strJobNo != null )
                     {
                         int intMaxLineItemNo = 1;
                         List<Jmjm3> list1 = db.Select<Jmjm3>("Select Max(LineItemNo) LineItemNo from Jmjm3 Where JobNo = " + Modfunction.SQLSafeValue(strJobNo));
@@ -103,6 +98,15 @@ namespace WebApi.ServiceModel.TMS
                         });
                      
                     }
+
+
+                    string str;
+                    str = " Note = " + Modfunction.SQLSafeValue(request.Remark) + ",OnBehalfName = " + Modfunction.SQLSafeValue(request.OnBehalfName) + ",DeliveryEndDateTime=GETDATE(),StatusCode = 'POD',CompletedFlag='Y'";
+                    db.Update(request.TableName,
+                           str,
+                           " BookingNo='" + request.Key + "'");
+
+
                 }
 
             }
@@ -131,6 +135,7 @@ namespace WebApi.ServiceModel.TMS
                                 string strRemark = "";
                                 string strStatusCode = "";
                                 string strOnBehalfName = "";
+                                string strDCDescription = ja[i]["DCFlag"].ToString();
                                 if (ja[i]["OnBehalfName"] != null || ja[i]["OnBehalfName"].ToString() != "")
                                     strOnBehalfName = ja[i]["OnBehalfName"].ToString();
                                 if (ja[i]["Remark"] != null || ja[i]["Remark"].ToString() != "")
@@ -171,8 +176,44 @@ namespace WebApi.ServiceModel.TMS
                                 }
                                 else
                                 {
+
+                                    string strJobNo = "";
+                                    if (ja[i]["JobNo"] != null || ja[i]["JobNo"].ToString() != "")
+                                        strJobNo = ja[i]["JobNo"].ToString();
+                                    if (strJobNo != "")
+                                    {
+                                        int intMaxLineItemNo = 1;
+                                        List<Jmjm3> list1 = db.Select<Jmjm3>("Select Max(LineItemNo) LineItemNo from Jmjm3 Where JobNo = " + Modfunction.SQLSafeValue(strJobNo));
+                                        if (list1 != null)
+                                        {
+                                            if (list1[0].LineItemNo > 0)
+                                                intMaxLineItemNo = list1[0].LineItemNo + 1;
+                                        }
+                                        if (strDCDescription == "Collection")
+                                        {
+                                            strDCDescription = "COLLECTED";
+                                        }
+                                        else
+                                        {
+                                            strDCDescription = "DELIVERED";
+                                        }
+                                        db.Insert(new Jmjm3
+                                        {
+                                            JobNo = strJobNo,
+                                            DateTime = DateTime.Now,
+                                            UpdateDatetime = DateTime.Now,
+                                            LineItemNo = intMaxLineItemNo,
+                                            AutoFlag = "N",
+                                            StatusCode = "POD",
+                                            UpdateBy = ja[0]["DriverCode"] == null ? "" : Modfunction.SQLSafe(ja[0]["DriverCode"].ToString()),
+                                            Remark = Modfunction.SQLSafe(strRemark),
+                                            Description = strDCDescription
+                                        });
+                                      
+                                    }
+
                                     db.Update(strTableName,
-                                           " Note = '" + Modfunction.SQLSafe(strRemark) + "',StatusCode = '" + strStatusCode + "', OnBehalfName = '" + Modfunction.SQLSafe(strOnBehalfName) + "',DeliveryEndDateTime=GETDATE()",
+                                           " Note = '" + Modfunction.SQLSafe(strRemark) + "',StatusCode = '" + strStatusCode + "', OnBehalfName = '" + Modfunction.SQLSafe(strOnBehalfName) + "',DeliveryEndDateTime=GETDATE(),CompletedFlag='Y'",
                                            " BookingNo='" + strKey + "'");
                                 }
 

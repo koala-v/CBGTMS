@@ -1,11 +1,10 @@
 'use strict';
-app.controller('JoblistingListCtrl', ['ENV', '$scope', '$state', '$ionicLoading', '$ionicPopup', '$ionicFilterBar', '$ionicActionSheet', '$cordovaNetwork', 'ApiService', '$ionicPlatform', '$cordovaSQLite', 'SqlService',
-    function (ENV, $scope, $state, $ionicLoading, $ionicPopup, $ionicFilterBar, $ionicActionSheet, $cordovaNetwork, ApiService, $ionicPlatform, $cordovaSQLite, SqlService) {
+app.controller('JoblistingListCtrl', ['ENV', '$scope', '$state', '$ionicLoading', '$ionicPopup', '$ionicFilterBar', '$ionicActionSheet', '$cordovaNetwork', 'ApiService', '$ionicPlatform', '$cordovaSQLite', '$timeout',  'SqlService',
+    function (ENV, $scope, $state, $ionicLoading, $ionicPopup, $ionicFilterBar, $ionicActionSheet, $cordovaNetwork, ApiService, $ionicPlatform, $cordovaSQLite,$timeout, SqlService) {
         var filterBarInstance = null;
         var dataResults = new Array();
         var hmTobk1 = new HashMap();
         var getObjTobk1 = function (objTobk1, i) {
-
             var jobs = {
                 key: objTobk1.Key,
                 DCFlagWithPcsUom: objTobk1.DCFlag + ' ' + objTobk1.PcsUom,
@@ -43,14 +42,14 @@ app.controller('JoblistingListCtrl', ['ENV', '$scope', '$state', '$ionicLoading'
 
         var showTobk1 = function () {
             if (!ENV.fromWeb) {
-                if ($cordovaNetwork.isOffline() ) {
+                if ($cordovaNetwork.isOffline()) {
                     ENV.wifi = false;
                 } else {
                     ENV.wifi = true;
                 }
             }
             if (ENV.wifi === true) {
-                var strSqlFilter = "FilterTime='" + moment(new Date()).format('YYYYMMDD') + "' And DriverCode='" + sessionStorage.getItem("sessionDriverCode") + "'"; // not record
+                var strSqlFilter = " DriverCode='" + sessionStorage.getItem("sessionDriverCode") + "'"; // not record
                 SqlService.Select('Tobk1', '*', strSqlFilter).then(function (results) {
                     if (results.rows.length > 0) {
                         for (var i = 0; i < results.rows.length; i++) {
@@ -104,7 +103,7 @@ app.controller('JoblistingListCtrl', ['ENV', '$scope', '$state', '$ionicLoading'
 
                 });
             } else {
-                var strSqlFilter = " FilterTime='" + moment(new Date()).format('YYYYMMDD') + "' And DriverCode='" + sessionStorage.getItem("sessionDriverCode") + "'"; // not record
+                var strSqlFilter = "  DriverCode='" + sessionStorage.getItem("sessionDriverCode") + "'"; // not record
                 SqlService.Select('Tobk1', '*', strSqlFilter).then(function (results) {
                     if (results.rows.length > 0) {
                         for (var i = 0; i < results.rows.length; i++) {
@@ -153,6 +152,7 @@ app.controller('JoblistingListCtrl', ['ENV', '$scope', '$state', '$ionicLoading'
                 filterBarInstance = null;
             }
             $timeout(function () {
+              showTobk1();
                 $scope.$broadcast('scroll.refreshComplete');
             }, 1000);
         };
@@ -570,6 +570,7 @@ app.controller('JoblistingConfirmCtrl', ['ENV', '$scope', '$state', '$stateParam
                 StatusCode: 'POD',
                 TempBase64: signature,
                 UpdatedFlag: UpdatedValue,
+                FilterTime: moment(new Date()).format('YYYYMMDD'),
                 OnBehalfName: $scope.Confirm.Tobk1.OnBehalfName
             };
             SqlService.Update('Tobk1', objTobk1, Tobk1Filter).then(function (res) {});
@@ -582,7 +583,7 @@ app.controller('JoblistingConfirmCtrl', ['ENV', '$scope', '$state', '$stateParam
                 objUri.addSearch('OnBehalfName', $scope.Confirm.Tobk1.OnBehalfName);
                 objUri.addSearch('JobNo', $scope.Confirm.Tobk1.JobNo);
                 objUri.addSearch('DCDescription', $scope.Confirm.Tobk1.DCFlag);
-  objUri.addSearch('DriverCode', sessionStorage.getItem("sessionDriverCode"));
+                objUri.addSearch('DriverCode', sessionStorage.getItem("sessionDriverCode"));
                 ApiService.Get(objUri, true).then(function success(result) {});
                 var jsonData = {
                     'Base64': $scope.signature,

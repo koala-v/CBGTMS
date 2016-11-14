@@ -29,7 +29,8 @@ app.controller('dailycompletedCtrl', ['ENV', '$scope', '$state', '$ionicPopup', 
         };
 
         var ShowDailyCompleted = function () {
-            var strSqlFilter = "UpdatedFlag != '' And FilterTime='" + $scope.Search.CompletedDate + "' And DriverCode='" + sessionStorage.getItem("sessionDriverCode") + "'"; // not record
+          var strSqlFilter = "UpdatedFlag != '' And FilterTime='" + $scope.Search.CompletedDate + "' And DriverCode='" + sessionStorage.getItem("sessionDriverCode") + "'";
+            // var strSqlFilter = "UpdatedFlag != '' And FilterTime='" + $scope.Search.CompletedDate + "' And DriverCode='" + sessionStorage.getItem("sessionDriverCode") + "'"; // not record
             SqlService.Select('Tobk1', '*', strSqlFilter).then(function (results) {
                 $scope.DailyCompleted.tobk1s = new Array();
                 if (results.rows.length > 0) {
