@@ -16,5 +16,6 @@ namespace WebApi.ServiceModel.Tables
         public string StatusCode { get; set; }
         public string AutoFlag { get; set; }
         public string Remark { get; set; }
+        public string RefNo { get; set; }      
     }
 }

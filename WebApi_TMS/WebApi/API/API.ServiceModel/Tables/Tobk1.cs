@@ -37,7 +37,7 @@ namespace WebApi.ServiceModel.Tables
         public Int32 TotalPcs { get; set; }
         public string CargoDescription { get; set; }
         public string AppHideScheduleTime { get; set; }
-        
+        public Int32 LineItemNo { get; set; }
 
     }
 }

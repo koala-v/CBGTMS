@@ -34,6 +34,7 @@ namespace WebApi.ServiceModel.TMS
         {
             int i = -1;
             string folderPath = "";
+          
             if (!string.IsNullOrEmpty(request.Key))
             {
                 try
@@ -95,7 +96,7 @@ namespace WebApi.ServiceModel.TMS
                     {
                         using (var db = DbConnectionFactory.OpenDbConnection())
                         {
-                            db.Update(request.TableName,
+                            db.Update("Tobk1",
                                     "AttachmentFlag = 'Y'",
                                   " BookingNo='" + request.Key + "'");
                         }

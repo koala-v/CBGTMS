@@ -221,7 +221,7 @@ app.config(['ENV', '$stateProvider', '$urlRouterProvider', '$ionicConfigProvider
                 controller: 'JoblistingListCtrl'
             })
             .state('jobListingDetail', {
-                url: '/joblisting/detail/:key',
+                url: '/joblisting/detail/:key/:LineItemNo',
                 cache: 'false',
                 templateUrl: 'view/joblisting/detail.html',
                 controller: 'JoblistingDetailCtrl'
@@ -247,7 +247,7 @@ app.config(['ENV', '$stateProvider', '$urlRouterProvider', '$ionicConfigProvider
                 controller: 'dailycompletedCtrl'
             })
             .state('jobListingConfirm', {
-                url: '/joblisting/confirm/:key',
+                url: '/joblisting/confirm/:key/:LineItemNo',
                 cache: 'false',
                 templateUrl: 'view/joblisting/confirm.html',
                 controller: 'JoblistingConfirmCtrl'

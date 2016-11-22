@@ -20,6 +20,9 @@ namespace WebApi.ServiceModel.TMS
         public string Key  { get; set; }
         public string TableName { get; set; }
         public string JobNo { get; set; }
+        public int LineItemNo { get; set; }
+
+
     }
 
     public class DownLoadImg_Logic
@@ -106,7 +109,9 @@ namespace WebApi.ServiceModel.TMS
                         DocumentPath = saco1[0].DocumentPath;
                     }
                 }
-                strPath = DocumentPath + "\\" + request.TableName + "\\" + request.Key + "\\" + "signature.png";
+                string strSignature = "";
+                strSignature = request.Key+"_"+request.LineItemNo+ ".png";
+                strPath = DocumentPath + "\\" + request.TableName + "\\" + request.Key + "\\" + strSignature;
                 if (File.Exists(strPath))
                 {
                     using (FileStream fsRead = new FileStream(strPath, FileMode.Open))
