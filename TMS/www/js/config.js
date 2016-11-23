@@ -32,5 +32,5 @@ appConfig.constant('ENV', {
     updateFile: 'update.json',
     rootPath: 'BasisTMS',
     configFile: 'config.txt',
-    version: '1.0.1.5',
+    version: '1.0.1.6',
 });

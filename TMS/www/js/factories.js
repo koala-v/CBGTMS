@@ -58,6 +58,7 @@ appFactory.factory('TABLE_DB', function () {
             AppHideScheduleTime: 'TEXT',
             UpdateRemarkFlag:'TEXT',
             LineItemNo:'INT',
+            JobSeqNo:'INT'
 
         },
         Jmjm1: {

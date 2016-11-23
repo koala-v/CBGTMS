@@ -38,6 +38,8 @@ namespace WebApi.ServiceModel.Tables
         public string CargoDescription { get; set; }
         public string AppHideScheduleTime { get; set; }
         public Int32 LineItemNo { get; set; }
+        public Int32 JobSeqNo { get; set; }
+
 
     }
 }

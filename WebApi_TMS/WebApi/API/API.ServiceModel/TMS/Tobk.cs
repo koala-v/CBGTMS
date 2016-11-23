@@ -60,11 +60,13 @@ namespace WebApi.ServiceModel.TMS
                                  " when '' then isnull(Rcbp1.Telephone, '')  else Rcbp1.Handphone1 end   from rcbp1" +
                                  " where rcbp1.BusinessPartyCode = Tobk2.ToLocationCode) End), '')  AS PhoneNumber," +
                                  "  isnull((select  AppHideScheduleTime  from topa1),'N') as AppHideScheduleTime ," +
-                                 " '' as UpdateRemarkFlag   from Tobk2 join Tobk1 on tobk1.BookingNo = Tobk2.BookingNo" +
+                                 " Tobk2.JobSeqNo as JobSeqNo," +
+                                 " '' as UpdateRemarkFlag   from Tobk2 join Tobk1 on tobk1.BookingNo = Tobk2.BookingNo" +                                 
                                  " Where   Tobk2.DriverCode = '" + request.DriverCode + "'  ";
                     if (request.BookingNo != null && request.BookingNo != "" && request.LineItemNo != null && request.LineItemNo != "") {
-                        strSql = strSql + "And BookingNo='" + request.BookingNo + "' And LineItemNo='"+request.LineItemNo+"'";
+                        strSql = strSql + "And Tobk2.BookingNo='" + request.BookingNo + "' And Tobk2.LineItemNo='" + request.LineItemNo+"'";
                     }
+                    strSql = strSql + " order by (case isnull((select  AppHideScheduleTime  from topa1),'N') when 'Y' then JobSeqNo end) ";
                     Result = db.Select<Tobk1>(strSql);
                 }
             }
@@ -103,11 +105,11 @@ namespace WebApi.ServiceModel.TMS
                             DateTime = DateTime.Now,
                             UpdateDatetime = DateTime.Now,
                             LineItemNo = intMaxLineItemNo,
-                            RefNo = Modfunction.SQLSafe(request.LineItemNo),
+                            RefNo = Modfunction.SQLSafe(request.LineItemNo).ToString(),
                             AutoFlag = "N",
                             StatusCode = "POD",
                             UpdateBy = Modfunction.SQLSafe(request.DriverCode),
-                            Remark = Modfunction.SQLSafe(request.Remark),
+                            Remark = Modfunction.SQLSafeValue(request.Remark),
                             Description = Modfunction.SQLSafe(request.DCDescription)
                         });
                      
@@ -184,7 +186,7 @@ namespace WebApi.ServiceModel.TMS
                                    
 
                                         string str;
-                                        str = " Note = " + Modfunction.SQLSafeValue(request.Remark) + ",DeliveryDate=GETDATE(),ReturnFlag='Y'";
+                                        str = " Note = " + Modfunction.SQLSafeValue(strRemark) + ",DeliveryDate=GETDATE(),ReturnFlag='Y'";
                                         db.Update(strTableName,
                                                str,
                                                " BookingNo='" + strKey + "' and LineItemNo='" + strTobk2LineItemNo + "'");
@@ -231,7 +233,7 @@ namespace WebApi.ServiceModel.TMS
                                     }
 
                                     string str;
-                                    str = " Note = " + Modfunction.SQLSafeValue(request.Remark) + ",DeliveryDate=GETDATE(),CompleteFlag='Y'";
+                                    str = " Note = " + Modfunction.SQLSafeValue(strRemark) + ",DeliveryDate=GETDATE(),CompleteFlag='Y'";
                                     db.Update(strTableName,
                                            str,
                                            " BookingNo='" + strKey + "' and LineItemNo='" + strTobk2LineItemNo + "'");
