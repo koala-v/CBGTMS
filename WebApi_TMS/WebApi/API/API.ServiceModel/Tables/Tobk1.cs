@@ -21,11 +21,11 @@ namespace WebApi.ServiceModel.Tables
         public string DCFlag { get; set; }
         public string PcsUom { get; set; }
         public DateTime TimeFrom { get; set; }
-        public string DeliveryToName { get; set; }
-        public string DeliveryToAddress1 { get; set; }
-        public string DeliveryToAddress2 { get; set; }
-        public string DeliveryToAddress3 { get; set; }
-        public string DeliveryToAddress4 { get; set; }
+        //public string DeliveryToName { get; set; }
+        //public string DeliveryToAddress1 { get; set; }
+        //public string DeliveryToAddress2 { get; set; }
+        //public string DeliveryToAddress3 { get; set; }
+        //public string DeliveryToAddress4 { get; set; }
         public string StatusCode { get; set; }
         public string CancelDescription { get; set; }
         public string DriverCode { get; set; }
@@ -39,6 +39,19 @@ namespace WebApi.ServiceModel.Tables
         public string AppHideScheduleTime { get; set; }
         public Int32 LineItemNo { get; set; }
         public Int32 JobSeqNo { get; set; }
+        public string FromLocationName { get; set; }
+        public string FromLocationAddress1 { get; set; }
+        public string FromLocationAddress2 { get; set; }
+        public string FromLocationAddress3 { get; set; }
+        public string FromLocationAddress4 { get; set; }
+        public string ToLocationName { get; set; }
+        public string ToLocationAddress1 { get; set; }
+        public string ToLocationAddress2 { get; set; }
+        public string ToLocationAddress3 { get; set; }
+        public string ToLocationAddress4 { get; set; }
+
+       
+     
 
 
     }

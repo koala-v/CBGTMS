@@ -13,8 +13,8 @@ app.controller('JoblistingListCtrl', ['ENV', '$scope', '$state', '$ionicLoading'
                 time: is.not.equal(objTobk1.AppHideScheduleTime, 'Y') ? checkDatetime(objTobk1.TimeFrom) : 'S/No: ' + objTobk1.JobSeqNo,
                 PostalCode: objTobk1.PostalCode,
                 customer: {
-                    name: objTobk1.DeliveryToName,
-                    address: objTobk1.DeliveryToAddress1 + "  " + objTobk1.DeliveryToAddress2 + "  " + objTobk1.DeliveryToAddress3 + "  " + objTobk1.DeliveryToAddress4
+                    name: objTobk1.FromLocationName,
+                    address: objTobk1.FromLocationAddress1 + "  " + objTobk1.FromLocationAddress2 + "  " + objTobk1.FromLocationAddress3 + "  " + objTobk1.FromLocationAddress4+"      "+objTobk1.ToLocationName+ "  " + objTobk1.ToLocationAddress1 + "  " + objTobk1.ToLocationAddress2 + "  " + objTobk1.ToLocationAddress3+"    "+objTobk1.ToLocationAddress4
                 },
                 status: {
                     inprocess: is.equal(objTobk1.StatusCode, 'POD') ? false : true,
@@ -109,7 +109,6 @@ app.controller('JoblistingListCtrl', ['ENV', '$scope', '$state', '$ionicLoading'
                 SqlService.Select('Tobk1', '*', strSqlFilter).then(function (results) {
                     if (results.rows.length > 0) {
                         for (var i = 0; i < results.rows.length; i++) {
-
                             var objTobk1 = getObjTobk1(results.rows.item(i));
                             dataResults = dataResults.concat(objTobk1);
                         }

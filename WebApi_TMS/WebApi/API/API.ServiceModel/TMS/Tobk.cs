@@ -40,13 +40,14 @@ namespace WebApi.ServiceModel.TMS
                 {
                     string strSql = "";
                     strSql = " select Tobk2.BookingNo as 'Key','Tobk2' as TableName,Tobk2.LineItemNo, Case Tobk1.JobType when 'CO' then 'Collection'" +
-                                 " when 'DE' then 'Delivery' when 'TP' then 'Transport' else '' end as DCFlag ,'' as UpdatedFlag ,"+
+                                 "  when 'DE' then 'Delivery' when 'TP' then 'Transport' else '' end as DCFlag ,'' as UpdatedFlag ,"+
                                  "  isnull((cast(Tobk2.Pcs as nvarchar(20)) + ' ' + Tobk2.UomCode), '') as PcsUom ," +
-                                  " Case Tobk1.JobType when 'CO' then isnull(Tobk2.FromLocationName , '') else isnull(Tobk2.ToLocationName, '') END as DeliveryToName ,Tobk2.ScheduleDate as TimeFrom ," +
-                                 "  Case Tobk1.JobType when 'CO' then isnull(Tobk2.FromLocationAddress1,'') else isnull(Tobk2.ToLocationAddress1,'') END as DeliveryToAddress1 ,  " +
-                                 "  Case Tobk1.JobType when 'CO' then isnull(Tobk2.FromLocationAddress2,'') else isnull(Tobk2.ToLocationAddress2,'') END as DeliveryToAddress2 ," +
-                                 "  Case Tobk1.JobType when 'CO' then isnull(Tobk2.FromLocationAddress3,'') else isnull(Tobk2.ToLocationAddress3,'') END as DeliveryToAddress3 ," +
-                                 "  Case Tobk1.JobType when 'CO' then isnull(Tobk2.FromLocationAddress4,'') else isnull(Tobk2.ToLocationAddress4,'') END as DeliveryToAddress4 , " +
+                                 "  Tobk2.ScheduleDate as TimeFrom ," +
+                                 "   isnull(Tobk2.FromLocationName , '') as FromLocationName, isnull(Tobk2.ToLocationName, '')as  ToLocationName , " +
+                                 "   isnull(Tobk2.FromLocationAddress1,'') as FromLocationAddress1, isnull(Tobk2.ToLocationAddress1,'')  as ToLocationAddress1 ,  " +
+                                 "   isnull(Tobk2.FromLocationAddress2,'') as  FromLocationAddress2, isnull(Tobk2.ToLocationAddress2,'')  as ToLocationAddress2 ," +
+                                 "   isnull(Tobk2.FromLocationAddress3,'') as  FromLocationAddress3,  isnull(Tobk2.ToLocationAddress3,'')  as ToLocationAddress3 ," +
+                                 "   isnull(Tobk2.FromLocationAddress4,'') as FromLocationAddress4,  isnull(Tobk2.ToLocationAddress4,'')  as ToLocationAddress4 , " +
                                  "  Tobk2.GrossWeight as Weight,Tobk2.Volume ," +
                                  "  isnull(Tobk1.Description, '') as DeliveryInstruction1, '' as DeliveryInstruction2, '' as DelitructiveryInson3," +
                                  "  GoodsDescription01 AS CargoDescription,Tobk2.Note as Remark,Tobk1.AttachmentFlag as AttachmentFlag ,isnull(Tobk1.JobNo, '') as JobNo," +
@@ -249,5 +250,6 @@ namespace WebApi.ServiceModel.TMS
             catch { throw; }
             return Result;
         }
+
     }
 }
