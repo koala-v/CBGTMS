@@ -48,10 +48,13 @@ app.controller('JoblistingListCtrl', ['ENV', '$scope', '$state', '$ionicLoading'
                     ENV.wifi = false;
                 } else {
                     ENV.wifi = true;
+
                 }
             }
+
             if (ENV.wifi === true) {
-                var strSqlFilter = " DriverCode='" + sessionStorage.getItem("sessionDriverCode") + "'"; // not record
+
+          var strSqlFilter = " DriverCode='" + sessionStorage.getItem("sessionDriverCode") + "'"; // not record
                 SqlService.Select('Tobk1', '*', strSqlFilter).then(function (results) {
                     if (results.rows.length > 0) {
                         for (var i = 0; i < results.rows.length; i++) {
@@ -94,7 +97,6 @@ app.controller('JoblistingListCtrl', ['ENV', '$scope', '$state', '$ionicLoading'
                                     var jobs = getObjTobk1(results[i]);
                                     dataResults = dataResults.concat(jobs);
                                     $scope.jobs = dataResults;
-
                                     SqlService.Insert('Tobk1', objTobk1).then(function (res) {});
                                     getSignature(objTobk1);
 
@@ -105,6 +107,7 @@ app.controller('JoblistingListCtrl', ['ENV', '$scope', '$state', '$ionicLoading'
 
                 });
             } else {
+
                 var strSqlFilter = "  DriverCode='" + sessionStorage.getItem("sessionDriverCode") + "'"; // not record
                 SqlService.Select('Tobk1', '*', strSqlFilter).then(function (results) {
                     if (results.rows.length > 0) {

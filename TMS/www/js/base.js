@@ -20,6 +20,11 @@ var checkAgentDatetime = function (datetime) {
     return datetime;
 };
 
+
+var uppercase = function (string) {
+       return string.toUpperCase() ;
+   };
+
 var checkDateFormat=function(datetime){
   if(datetime==='') return true;
   var reg = /^(\d+)-(\d{1,2})-(\d{1,2}) (\d{1,2}):(\d{1,2}):(\d{1,2})$/;
@@ -33,7 +38,7 @@ if(d.getFullYear()!=r[1])return false;
 if(d.getMonth()==r[2]){
   if(d.getMonth()>0 && d.getMonth()<13){
   }else{   return 1;   }
-} 
+}
 if(d.getDate()!=r[3])return false;
 if(d.getHours()!=r[4])return false;
 if(d.getMinutes()!=r[5])return false;

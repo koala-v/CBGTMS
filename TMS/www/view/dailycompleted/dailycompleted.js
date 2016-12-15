@@ -9,15 +9,17 @@ app.controller('dailycompletedCtrl', ['ENV', '$scope', '$state', '$ionicPopup', 
             CompletedDate: moment(new Date()).format('YYYYMMDD'),
         };
 
-        var getobjTobk1 = function (objTobk1, i) {
+        var getobjTobk1 = function (objTobk1) {
             var jobs = {
                 key: objTobk1.Key,
+                LineItemNo: objTobk1.LineItemNo,
                 DCFlagWithPcsUom: objTobk1.DCFlag + ' ' + objTobk1.PcsUom,
-                time: is.not.equal(objTobk1.AppHideScheduleTime, 'Y') ? checkDatetime(objTobk1.TimeFrom) : 'S/No: ' + (parseInt(i) + 1),
+                // time: checkDatetime(objTobk1.TimeFrom),
+                time: is.not.equal(objTobk1.AppHideScheduleTime, 'Y') ? checkDatetime(objTobk1.TimeFrom) : 'S/No: ' + objTobk1.JobSeqNo,
                 PostalCode: objTobk1.PostalCode,
                 customer: {
-                    name: objTobk1.DeliveryToName,
-                    address: objTobk1.DeliveryToAddress1 + objTobk1.DeliveryToAddress2 + objTobk1.DeliveryToAddress3 + objTobk1.DeliveryToAddress4
+                    name: objTobk1.FromLocationName,
+                    address: objTobk1.FromLocationAddress1 + "  " + objTobk1.FromLocationAddress2 + "  " + objTobk1.FromLocationAddress3 + "  " + objTobk1.FromLocationAddress4 + "      " + objTobk1.ToLocationName + "  " + objTobk1.ToLocationAddress1 + "  " + objTobk1.ToLocationAddress2 + "  " + objTobk1.ToLocationAddress3 + "    " + objTobk1.ToLocationAddress4
                 },
                 status: {
                     inprocess: is.equal(objTobk1.StatusCode, 'POD') ? false : true,
@@ -25,11 +27,27 @@ app.controller('dailycompletedCtrl', ['ENV', '$scope', '$state', '$ionicPopup', 
                     failed: is.equal(objTobk1.StatusCode, 'CANCEL') ? true : false,
                 }
             };
+
+            // var jobs = {
+            //     key: objTobk1.Key,
+            //     DCFlagWithPcsUom: objTobk1.DCFlag + ' ' + objTobk1.PcsUom,
+            //     time: is.not.equal(objTobk1.AppHideScheduleTime, 'Y') ? checkDatetime(objTobk1.TimeFrom) : 'S/No: ' + (parseInt(i) + 1),
+            //     PostalCode: objTobk1.PostalCode,
+            //     customer: {
+            //         name: objTobk1.DeliveryToName,
+            //         address: objTobk1.DeliveryToAddress1 + objTobk1.DeliveryToAddress2 + objTobk1.DeliveryToAddress3 + objTobk1.DeliveryToAddress4
+            //     },
+            //     status: {
+            //         inprocess: is.equal(objTobk1.StatusCode, 'POD') ? false : true,
+            //         success: is.equal(objTobk1.StatusCode, 'POD') ? true : false,
+            //         failed: is.equal(objTobk1.StatusCode, 'CANCEL') ? true : false,
+            //     }
+            // };
             return jobs;
         };
 
         var ShowDailyCompleted = function () {
-          var strSqlFilter = "UpdatedFlag != '' And FilterTime='" + $scope.Search.CompletedDate + "' And DriverCode='" + sessionStorage.getItem("sessionDriverCode") + "'";
+            var strSqlFilter = "UpdatedFlag != '' And FilterTime='" + $scope.Search.CompletedDate + "' And DriverCode='" + sessionStorage.getItem("sessionDriverCode") + "'";
             // var strSqlFilter = "UpdatedFlag != '' And FilterTime='" + $scope.Search.CompletedDate + "' And DriverCode='" + sessionStorage.getItem("sessionDriverCode") + "'"; // not record
             SqlService.Select('Tobk1', '*', strSqlFilter).then(function (results) {
                 $scope.DailyCompleted.tobk1s = new Array();
@@ -60,9 +78,14 @@ app.controller('dailycompletedCtrl', ['ENV', '$scope', '$state', '$ionicPopup', 
             ionicDatePicker.openDatePicker(ipObj1);
         };
         ShowDailyCompleted();
-
+        $scope.returnList = function () {
+          $state.go('index.login', {}, {
+              reload: true
+          });
+        };
         $scope.WifiConfirm = function () {
             var strSqlFilter = "UpdatedFlag = 'N' And FilterTime='" + $scope.Search.CompletedDate + "' And DriverCode='" + sessionStorage.getItem("sessionDriverCode") + "'"; // not record
+            // var strSqlFilter = " FilterTime='" + $scope.Search.CompletedDate + "' And DriverCode='" + sessionStorage.getItem("sessionDriverCode") + "'";
             SqlService.Select('Tobk1', '*', strSqlFilter).then(function (results) {
                 dataResults = new Array();
                 if (results.rows.length > 0) {
@@ -70,11 +93,14 @@ app.controller('dailycompletedCtrl', ['ENV', '$scope', '$state', '$ionicPopup', 
                         var objTobk1 = results.rows.item(i);
                         dataResults.push(objTobk1);
                         if (objTobk1.StatusCode === 'POD') {
+                            // var jsonData = {
+                            //     'Base64': 'data:image/png;base64,' + objTobk1.TempBase64,
+                            //     'FileName': 'signature.Png'
+                            // };
                             var jsonData = {
                                 'Base64': 'data:image/png;base64,' + objTobk1.TempBase64,
-                                'FileName': 'signature.Png'
+                                'FileName': objTobk1.Key + '_' + objTobk1.LineItemNo + '.Png'
                             };
-
                             if (objTobk1.TempBase64 !== null && is.not.equal(objTobk1.TempBase64, '') && is.not.undefined(objTobk1.TempBase64)) {
                                 objUri = ApiService.Uri(true, '/api/tms/upload/img');
                                 objUri.addSearch('Key', objTobk1.Key);
@@ -88,9 +114,9 @@ app.controller('dailycompletedCtrl', ['ENV', '$scope', '$state', '$ionicPopup', 
                     };
                     var objUri = ApiService.Uri(true, '/api/tms/tobk1/update');
                     ApiService.Post(objUri, jsonData, true).then(function success(result) {
-                        // PopupService.Info(null, 'Cancel Success', '').then(function (res) {
-                        //     $scope.returnList();
-                        // });
+                        PopupService.Info(null, 'UpdateConfirm Success', '').then(function (res) {
+                            $scope.returnList();
+                        });
                     });
 
                     var objTobk1 = {

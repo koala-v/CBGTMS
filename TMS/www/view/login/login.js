@@ -74,9 +74,9 @@ app.controller('LoginCtrl', ['ENV', '$scope', '$http', '$state', '$stateParams',
                         var results = result.data.results;
                         if (is.not.empty(results)) {
                             sessionStorage.clear();
-                            sessionStorage.setItem('sessionDriverCode', $scope.logininfo.strdriverID);
+                            sessionStorage.setItem('sessionDriverCode', uppercase($scope.logininfo.strdriverID));
                             var objTodr1_Rcbp1 = {
-                                DriverCode: $scope.logininfo.strdriverID,
+                                DriverCode: uppercase($scope.logininfo.strdriverID),
                             };
                             SqlService.Insert('Todr1_Rcbp1', objTodr1_Rcbp1).then(function (res) {});
                             $state.go('index.main', {}, {
@@ -162,7 +162,7 @@ app.controller('LoginCtrl', ['ENV', '$scope', '$http', '$state', '$stateParams',
                         if (is.not.empty(objTodr1_Rcbp1.DriverCode)) {
                             $rootScope.$broadcast('login');
                             sessionStorage.clear();
-                            sessionStorage.setItem('sessionDriverCode', objTodr1_Rcbp1.DriverCode);
+                            sessionStorage.setItem('sessionDriverCode', uppercase(objTodr1_Rcbp1.DriverCode));
                             $state.go('index.main', {}, {
                                 reload: true
                             });
