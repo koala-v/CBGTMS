@@ -1,6 +1,6 @@
 'use strict';
-app.controller('dailycompletedCtrl', ['ENV', '$scope', '$state', '$ionicPopup', '$cordovaKeyboard', '$cordovaBarcodeScanner', 'ACCEPTJOB_ORM', 'ApiService', '$cordovaSQLite', '$ionicPlatform', 'ionicDatePicker', 'SqlService',
-    function (ENV, $scope, $state, $ionicPopup, $cordovaKeyboard, $cordovaBarcodeScanner, ACCEPTJOB_ORM, ApiService, $cordovaSQLite, $ionicPlatform, ionicDatePicker, SqlService) {
+app.controller('dailycompletedCtrl', ['ENV', '$scope', '$state', '$ionicPopup', '$cordovaKeyboard', '$cordovaBarcodeScanner', 'ACCEPTJOB_ORM', 'ApiService', '$cordovaSQLite', '$ionicPlatform', '$cordovaNetwork','ionicDatePicker', 'SqlService','PopupService',
+    function (ENV, $scope, $state, $ionicPopup, $cordovaKeyboard, $cordovaBarcodeScanner, ACCEPTJOB_ORM, ApiService, $cordovaSQLite, $ionicPlatform,$cordovaNetwork, ionicDatePicker, SqlService,PopupService) {
         var dataResults = new Array();
         $scope.DailyCompleted = {
             tobk1s: []
@@ -28,25 +28,11 @@ app.controller('dailycompletedCtrl', ['ENV', '$scope', '$state', '$ionicPopup', 
                 }
             };
 
-            // var jobs = {
-            //     key: objTobk1.Key,
-            //     DCFlagWithPcsUom: objTobk1.DCFlag + ' ' + objTobk1.PcsUom,
-            //     time: is.not.equal(objTobk1.AppHideScheduleTime, 'Y') ? checkDatetime(objTobk1.TimeFrom) : 'S/No: ' + (parseInt(i) + 1),
-            //     PostalCode: objTobk1.PostalCode,
-            //     customer: {
-            //         name: objTobk1.DeliveryToName,
-            //         address: objTobk1.DeliveryToAddress1 + objTobk1.DeliveryToAddress2 + objTobk1.DeliveryToAddress3 + objTobk1.DeliveryToAddress4
-            //     },
-            //     status: {
-            //         inprocess: is.equal(objTobk1.StatusCode, 'POD') ? false : true,
-            //         success: is.equal(objTobk1.StatusCode, 'POD') ? true : false,
-            //         failed: is.equal(objTobk1.StatusCode, 'CANCEL') ? true : false,
-            //     }
-            // };
             return jobs;
         };
 
         var ShowDailyCompleted = function () {
+
             var strSqlFilter = "UpdatedFlag != '' And FilterTime='" + $scope.Search.CompletedDate + "' And DriverCode='" + sessionStorage.getItem("sessionDriverCode") + "'";
             // var strSqlFilter = "UpdatedFlag != '' And FilterTime='" + $scope.Search.CompletedDate + "' And DriverCode='" + sessionStorage.getItem("sessionDriverCode") + "'"; // not record
             SqlService.Select('Tobk1', '*', strSqlFilter).then(function (results) {
@@ -79,11 +65,21 @@ app.controller('dailycompletedCtrl', ['ENV', '$scope', '$state', '$ionicPopup', 
         };
         ShowDailyCompleted();
         $scope.returnList = function () {
-          $state.go('index.login', {}, {
-              reload: true
-          });
+            $state.go('index.login', {}, {
+                reload: true
+            });
         };
         $scope.WifiConfirm = function () {
+          if (!ENV.fromWeb) {
+              if ($cordovaNetwork.isOffline()) {
+                  ENV.wifi = false;
+              } else {
+                  ENV.wifi = true;
+
+              }
+          }
+
+          if (ENV.wifi === true) {
             var strSqlFilter = "UpdatedFlag = 'N' And FilterTime='" + $scope.Search.CompletedDate + "' And DriverCode='" + sessionStorage.getItem("sessionDriverCode") + "'"; // not record
             // var strSqlFilter = " FilterTime='" + $scope.Search.CompletedDate + "' And DriverCode='" + sessionStorage.getItem("sessionDriverCode") + "'";
             SqlService.Select('Tobk1', '*', strSqlFilter).then(function (results) {
@@ -93,10 +89,6 @@ app.controller('dailycompletedCtrl', ['ENV', '$scope', '$state', '$ionicPopup', 
                         var objTobk1 = results.rows.item(i);
                         dataResults.push(objTobk1);
                         if (objTobk1.StatusCode === 'POD') {
-                            // var jsonData = {
-                            //     'Base64': 'data:image/png;base64,' + objTobk1.TempBase64,
-                            //     'FileName': 'signature.Png'
-                            // };
                             var jsonData = {
                                 'Base64': 'data:image/png;base64,' + objTobk1.TempBase64,
                                 'FileName': objTobk1.Key + '_' + objTobk1.LineItemNo + '.Png'
@@ -114,18 +106,22 @@ app.controller('dailycompletedCtrl', ['ENV', '$scope', '$state', '$ionicPopup', 
                     };
                     var objUri = ApiService.Uri(true, '/api/tms/tobk1/update');
                     ApiService.Post(objUri, jsonData, true).then(function success(result) {
+                        var objTobk1 = {
+                            UpdatedFlag: 'Y'
+                        };
+                        SqlService.Update('Tobk1', objTobk1, strSqlFilter).then(function (res) {});
                         PopupService.Info(null, 'UpdateConfirm Success', '').then(function (res) {
-                            $scope.returnList();
+                          $scope.returnMain();
                         });
                     });
-
-                    var objTobk1 = {
-                        UpdatedFlag: 'Y'
-                    };
-                    SqlService.Update('Tobk1', objTobk1, strSqlFilter).then(function (res) {});
-
                 }
             });
+          }
+            else{
+              PopupService.Alert(null, 'Please Open WIFI').then(function (res) {
+                    $scope.returnMain();
+              });
+            }
         };
     }
 ]);

@@ -14,7 +14,7 @@ app.controller('JoblistingListCtrl', ['ENV', '$scope', '$state', '$ionicLoading'
                 PostalCode: objTobk1.PostalCode,
                 customer: {
                     name: objTobk1.FromLocationName,
-                    address: objTobk1.FromLocationAddress1 + "  " + objTobk1.FromLocationAddress2 + "  " + objTobk1.FromLocationAddress3 + "  " + objTobk1.FromLocationAddress4+"      "+objTobk1.ToLocationName+ "  " + objTobk1.ToLocationAddress1 + "  " + objTobk1.ToLocationAddress2 + "  " + objTobk1.ToLocationAddress3+"    "+objTobk1.ToLocationAddress4
+                    address: objTobk1.FromLocationAddress1 + "  " + objTobk1.FromLocationAddress2 + "  " + objTobk1.FromLocationAddress3 + "  " + objTobk1.FromLocationAddress4 + "      " + objTobk1.ToLocationName + "  " + objTobk1.ToLocationAddress1 + "  " + objTobk1.ToLocationAddress2 + "  " + objTobk1.ToLocationAddress3 + "    " + objTobk1.ToLocationAddress4
                 },
                 status: {
                     inprocess: is.equal(objTobk1.StatusCode, 'POD') ? false : true,
@@ -54,7 +54,7 @@ app.controller('JoblistingListCtrl', ['ENV', '$scope', '$state', '$ionicLoading'
 
             if (ENV.wifi === true) {
 
-          var strSqlFilter = " DriverCode='" + sessionStorage.getItem("sessionDriverCode") + "'"; // not record
+                var strSqlFilter = " DriverCode='" + sessionStorage.getItem("sessionDriverCode") + "'"; // not record
                 SqlService.Select('Tobk1', '*', strSqlFilter).then(function (results) {
                     if (results.rows.length > 0) {
                         for (var i = 0; i < results.rows.length; i++) {
