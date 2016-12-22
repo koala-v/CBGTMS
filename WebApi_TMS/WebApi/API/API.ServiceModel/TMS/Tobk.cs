@@ -38,9 +38,21 @@ namespace WebApi.ServiceModel.TMS
             {
                 using (var db = DbConnectionFactory.OpenDbConnection("TMS"))
                 {
-                    string strSql = "";
-                    strSql = " select Tobk2.BookingNo as 'Key','Tobk2' as TableName,Tobk2.LineItemNo, Case Tobk1.JobType when 'CO' then 'Collection'" +
-                                 "  when 'DE' then 'Delivery' when 'TP' then 'Transport' else '' end as DCFlag ,'' as UpdatedFlag ,"+
+                    string strTobk2BookingNo = "", strTobk1BookingNo="";
+                    if (request.BookingNo != null && request.BookingNo != "" && request.LineItemNo != null && request.LineItemNo != "")
+                    {
+                        if (int.Parse(request.LineItemNo) > 0)
+                        {
+                            strTobk2BookingNo = "And Tobk2.BookingNo='" + request.BookingNo + "' And Tobk2.LineItemNo='" + request.LineItemNo + "'";
+
+                        }
+                        else {
+                            strTobk1BookingNo = "And Tobk1.BookingNo='" + request.BookingNo + "' ";
+                        }
+                    }
+                        string strSql = "";
+                    strSql = "select * from ( select Tobk2.BookingNo as 'Key','Tobk2' as TableName,Tobk2.LineItemNo, Case Tobk1.JobType when 'CO' then 'Collection'" +
+                                 "  when 'DE' then 'Delivery' when 'TP' then 'Transport' else '' end as DCFlag ,'' as UpdatedFlag ," +
                                  "  isnull((cast(Tobk2.Pcs as nvarchar(20)) + ' ' + Tobk2.UomCode), '') as PcsUom ," +
                                  "  Tobk2.ScheduleDate as TimeFrom ," +
                                  "   isnull(Tobk2.FromLocationName , '') as FromLocationName, isnull(Tobk2.ToLocationName, '')as  ToLocationName , " +
@@ -62,12 +74,32 @@ namespace WebApi.ServiceModel.TMS
                                  " where rcbp1.BusinessPartyCode = Tobk2.ToLocationCode) End), '')  AS PhoneNumber," +
                                  "  isnull((select  AppHideScheduleTime  from topa1),'N') as AppHideScheduleTime ," +
                                  " Tobk2.JobSeqNo as JobSeqNo," +
-                                 " '' as UpdateRemarkFlag   from Tobk2 join Tobk1 on tobk1.BookingNo = Tobk2.BookingNo" +                                 
-                                 " Where   Tobk2.DriverCode = '" + request.DriverCode + "'  ";
-                    if (request.BookingNo != null && request.BookingNo != "" && request.LineItemNo != null && request.LineItemNo != "") {
-                        strSql = strSql + "And Tobk2.BookingNo='" + request.BookingNo + "' And Tobk2.LineItemNo='" + request.LineItemNo+"'";
-                    }
-                    strSql = strSql + " order by (case isnull((select  AppHideScheduleTime  from topa1),'N') when 'Y' then JobSeqNo end) ";
+                                 " '' as UpdateRemarkFlag   from Tobk2 join Tobk1 on tobk1.BookingNo = Tobk2.BookingNo " +
+                                 " Where   Tobk2.DriverCode = '" + request.DriverCode + "' " +
+                                 "  " + strTobk2BookingNo + "" +                                
+                    " UNION ALL  " +
+                                 "  select Tobk1.BookingNo as 'Key','Tobk2' as TableName, 0 AS LineItemNo, Case Tobk1.JobType " +
+                                 "  when 'CO' then 'Collection'  when 'DE' then 'Delivery' when 'TP' then 'Transport' else '' end as DCFlag , " +
+                                 "  '' as UpdatedFlag ,  isnull((cast(Tobk1.TotalPcs as nvarchar(20)) + ' ' + Tobk1.UomCode), '') as PcsUom , " +
+                                 "  Tobk1.ScheduleDate as TimeFrom ,   isnull(Tobk1.FromName, '') as FromLocationName, " +
+                                 "  isnull(Tobk1.ToName, '') as ToLocationName ,     " +
+                                 " 	isnull(Tobk1.FromAddress1, '') as FromLocationAddress1, isnull(Tobk1.ToAddress1, '') as ToLocationAddress1 ,    " +
+                                 "  isnull(Tobk1.FromAddress2, '') as FromLocationAddress2, isnull(Tobk1.ToAddress2, '') as ToLocationAddress2 ,  " +
+                                 "	isnull(Tobk1.FromAddress3, '') as FromLocationAddress3,  isnull(Tobk1.ToAddress3, '') as ToLocationAddress3 , " +
+                                 "  isnull(Tobk1.FromAddress4, '') as FromLocationAddress4,  isnull(Tobk1.ToAddress4, '') as ToLocationAddress4 ,  " +
+                                 "  Tobk1.TotalGrossWeight as Weight,Tobk1.TotalVolume AS Volume ,  isnull(Tobk1.Description, '') as DeliveryInstruction1, '' as DeliveryInstruction2,  " +
+                                 "	 '' as DelitructiveryInson3,  Description AS CargoDescription,Tobk1.Note as Remark,Tobk1.AttachmentFlag as AttachmentFlag , " +
+                                 "  isnull(Tobk1.JobNo, '') as JobNo,  Case StatusCode When 'POD' then 'POD' Else(Case(Select Top 1 StatusCode from jmjm3 Where JobNo = Tobk1.JobNo Order By LineItemNo DESC) When 'CANCEL' then 'CANCEL' else Tobk1.StatusCode END) END AS StatusCode,  '' AS CancelDescription, " +
+                                 "  Tobk1.DriverCode, CONVERT(varchar(20), Tobk1.ScheduleDate, 112) as FilterTime ,  " +
+                                 "  Case Tobk1.JobType when 'CO' then 'PC ' + isnull(Tobk1.FromPostalCode, '') else 'PC ' + isnull(Tobk1.ToPostalCode, '') END as PostalCode,  " +
+                                 "  Tobk1.NoOfPallet,isnull(Tobk1.OnBehalfName, '') as OnBehalfName,TotalPcs, isnull((Case Tobk1.JobType when 'CO' then(select top 1 case isnull(Rcbp1.Handphone1, '') when '' then isnull(Rcbp1.Telephone, '')  else Rcbp1.Handphone1 end   from rcbp1 where rcbp1.BusinessPartyCode = Tobk1.FromCode ) else (select top 1 case isnull(Rcbp1.Handphone1, '') when '' then isnull(Rcbp1.Telephone, '')  else Rcbp1.Handphone1 end   from rcbp1 where rcbp1.BusinessPartyCode = Tobk1.ToCode) End), '')  AS PhoneNumber, " +
+                                 "  isnull((select  AppHideScheduleTime  from topa1),'N') as AppHideScheduleTime , 0 as JobSeqNo, '' as UpdateRemarkFlag " +
+                                 "  from Tobk1 Where isnull((select count(tobk2.LineItemNo) from tobk2 where tobk2.BookingNo = tobk1.BookingNo ),0)= 0 and Tobk1.DriverCode = '" + request.DriverCode + "' " +
+                                 "  " + strTobk1BookingNo + " ) b ";
+                    //if (request.BookingNo != null && request.BookingNo != "" && request.LineItemNo != null && request.LineItemNo != "") {
+                    //    strSql = strSql + "And Tobk2.BookingNo='" + request.BookingNo + "' And Tobk2.LineItemNo='" + request.LineItemNo+"'";
+                    //}
+                    strSql = strSql + " order by (case isnull((select  AppHideScheduleTime  from topa1),'N') when 'Y' then b.JobSeqNo end) ";
                     Result = db.Select<Tobk1>(strSql);
                 }
             }
@@ -118,11 +150,18 @@ namespace WebApi.ServiceModel.TMS
 
 
                     string str;
-                    str = " Note = " + Modfunction.SQLSafeValue(request.Remark) + ",DeliveryDate=GETDATE(),CompleteFlag='Y'";
-                    db.Update(request.TableName,
-                           str,
-                           " BookingNo='" + request.Key + "' and LineItemNo='"+ request.LineItemNo + "'");
-
+                    if( request.LineItemNo != "0")
+                     {
+                        str = " Note = " + Modfunction.SQLSafeValue(request.Remark) + ",DeliveryDate=GETDATE(),CompleteFlag='Y'";
+                        db.Update(request.TableName,
+                               str,
+                               " BookingNo='" + request.Key + "' and LineItemNo = '" + request.LineItemNo + "' ");
+                    } else {
+                        str = " Note = " + Modfunction.SQLSafeValue(request.Remark) + ",DeliveryEndDateTime=GETDATE(),StatusCode = 'POD',CompletedFlag='Y'";
+                        db.Update("Tobk1",
+                               str,
+                               " BookingNo='" + request.Key + "'");
+                    }
 
                 }
 
@@ -184,13 +223,25 @@ namespace WebApi.ServiceModel.TMS
                                             Remark = Modfunction.SQLSafe(strRemark),
                                             Description = ja[0]["CancelDescription"] == null ? "" : Modfunction.SQLSafe(ja[0]["CancelDescription"].ToString())
                                         });
-                                   
+
+
 
                                         string str;
-                                        str = " Note = " + Modfunction.SQLSafeValue(strRemark) + ",DeliveryDate=GETDATE(),ReturnFlag='Y'";
-                                        db.Update(strTableName,
-                                               str,
-                                               " BookingNo='" + strKey + "' and LineItemNo='" + strTobk2LineItemNo + "'");
+                                        if (strTobk2LineItemNo != "0")
+                                        {
+                                           
+                                            str = " Note = " + Modfunction.SQLSafeValue(strRemark) + ",DeliveryDate=GETDATE(),ReturnFlag='Y'";
+                                            db.Update(strTableName,
+                                                   str,
+                                                   " BookingNo='" + strKey + "' and LineItemNo='" + strTobk2LineItemNo + "'");
+                                        }
+                                        else
+                                        {
+                                            str = " Note = " + Modfunction.SQLSafeValue(strRemark) + ",DeliveryEndDateTime=GETDATE()";
+                                            db.Update("Tobk1",
+                                                   str,
+                                                   " BookingNo='" + strKey + "'");
+                                        }
 
                                     }
                                 }
@@ -233,11 +284,22 @@ namespace WebApi.ServiceModel.TMS
                                       
                                     }
 
+
                                     string str;
-                                    str = " Note = " + Modfunction.SQLSafeValue(strRemark) + ",DeliveryDate=GETDATE(),CompleteFlag='Y'";
-                                    db.Update(strTableName,
-                                           str,
-                                           " BookingNo='" + strKey + "' and LineItemNo='" + strTobk2LineItemNo + "'");
+                                    if (strTobk2LineItemNo  != "0")
+                                    {
+                                        str = " Note = " + Modfunction.SQLSafeValue(strRemark) + ",DeliveryDate=GETDATE(),CompleteFlag='Y'";
+                                        db.Update(strTableName,
+                                               str,
+                                               " BookingNo='" + strKey + "' and LineItemNo='" + strTobk2LineItemNo + "'");
+                                    }
+                                    else
+                                    {
+                                        str = " Note = " + Modfunction.SQLSafeValue(strRemark) + ",DeliveryEndDateTime=GETDATE(),StatusCode = 'POD',CompletedFlag='Y'";
+                                        db.Update("Tobk1",
+                                               str,
+                                               " BookingNo='" + strKey + "'");
+                                    }
 
                                 }
 
