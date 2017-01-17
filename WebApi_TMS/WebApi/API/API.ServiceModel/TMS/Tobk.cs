@@ -90,7 +90,7 @@ namespace WebApi.ServiceModel.TMS
                                  "  Case Tobk1.JobType when 'CO' then 'PC ' + isnull(Tobk1.FromPostalCode, '') else 'PC ' + isnull(Tobk1.ToPostalCode, '') END as PostalCode,  " +
                                  "  Tobk1.NoOfPallet,isnull(Tobk1.OnBehalfName, '') as OnBehalfName,TotalPcs, isnull((Case Tobk1.JobType when 'CO' then(select top 1 case isnull(Rcbp1.Handphone1, '') when '' then isnull(Rcbp1.Telephone, '')  else Rcbp1.Handphone1 end   from rcbp1 where rcbp1.BusinessPartyCode = Tobk1.FromCode ) else (select top 1 case isnull(Rcbp1.Handphone1, '') when '' then isnull(Rcbp1.Telephone, '')  else Rcbp1.Handphone1 end   from rcbp1 where rcbp1.BusinessPartyCode = Tobk1.ToCode) End), '')  AS PhoneNumber, " +
                                  "  isnull((select  AppHideScheduleTime  from topa1),'N') as AppHideScheduleTime , 0 as JobSeqNo, '' as UpdateRemarkFlag " +
-                                 "  from Tobk1 Where isnull((select count(tobk2.LineItemNo) from tobk2 where tobk2.BookingNo = tobk1.BookingNo ),0)= 0   and  CONVERT(varchar(20),tobk1.ScheduleDate ,112)=(select convert(varchar(10),getdate(),112)) and  Tobk1.DriverCode = '" + request.DriverCode + "'  " +
+                                 "  from Tobk1  where CONVERT(varchar(20),tobk1.ScheduleDate ,112)=(select convert(varchar(10),getdate(),112)) and  Tobk1.DriverCode = '" + request.DriverCode + "'  " +
                                  "  " + strTobk1BookingNo + " ) b ";
                     //if (request.BookingNo != null && request.BookingNo != "" && request.LineItemNo != null && request.LineItemNo != "") {
                     //    strSql = strSql + "And Tobk2.BookingNo='" + request.BookingNo + "' And Tobk2.LineItemNo='" + request.LineItemNo+"'";
