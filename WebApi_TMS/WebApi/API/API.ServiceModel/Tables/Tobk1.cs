@@ -49,9 +49,10 @@ namespace WebApi.ServiceModel.Tables
         public string ToLocationAddress2 { get; set; }
         public string ToLocationAddress3 { get; set; }
         public string ToLocationAddress4 { get; set; }
+        public DateTime DateTime { get; set; }
+        
 
-       
-     
+
 
 
     }

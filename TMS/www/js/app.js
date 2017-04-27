@@ -41,6 +41,9 @@ app.run(['ENV', '$ionicPlatform', '$rootScope', '$state', '$location', '$timeout
                     SqlService.Drop('Tobk1').then(function (res) {
                         SqlService.Create('Tobk1', TABLE_DB.Tobk1).then(function (res) {});
                     });
+                    SqlService.Drop('Tobk1Pending').then(function (res) {
+                        SqlService.Create('Tobk1Pending', TABLE_DB.Tobk1Pending).then(function (res) {});
+                    });
                     SqlService.Drop('Jmjm1').then(function (res) {
                         SqlService.Create('Jmjm1', TABLE_DB.Jmjm1).then(function (res) {});
                     });
@@ -48,6 +51,7 @@ app.run(['ENV', '$ionicPlatform', '$rootScope', '$state', '$location', '$timeout
                     SqlService.Create('Todr1_Rcbp1', TABLE_DB.Todr1_Rcbp1).then(function (res) {});
                     SqlService.Create('Tobk1', TABLE_DB.Tobk1).then(function (res) {});
                     SqlService.Create('Jmjm1', TABLE_DB.Jmjm1).then(function (res) {});
+                    SqlService.Create('Tobk1Pending', TABLE_DB.Tobk1Pending).then(function (res) {});
                 }
             });
         });

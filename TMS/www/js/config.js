@@ -4,7 +4,7 @@ appConfig.constant('ENV', {
     website: 'www.sysfreight.net/app/tms/basis',
     api: 'www.sysfreight.net/apis/tms/basis',
     // api: 'http://localhost:62787/',
-    //  api: 'localhost:55884',
+    //  api: 'localhost:2354',
     reset: {
         'website': 'www.sysfreight.net/app/tms/basis',
         'api': 'www.sysfreight.net/apis/tms/basis',
@@ -32,5 +32,5 @@ appConfig.constant('ENV', {
     updateFile: 'update.json',
     rootPath: 'BasisTMS',
     configFile: 'config.txt',
-    version: '1.0.1.8',
+    version: '1.0.1.9',
 });

@@ -75,6 +75,17 @@
                 <textarea wrap="hard" cols="48px" ng-model="Detail.Tobk1.Remark" rows="4">
                 </textarea>
             </div>
+            <div class="row">
+                <div class="col-35">
+                  <button class="button icon   " ng-click="PickUpTime()">
+                      &nbsp;Pickup Time
+                  </button>
+                </div>
+                <div class="col">
+                    <p><span ng-bind="Detail.Tobk1.DateTime"></span></p>
+                </div>
+
+            </div>
         </div>
     </ion-content>
     <ion-footer-bar class="bar-positive">

@@ -13,6 +13,8 @@ namespace WebApi.ServiceModel.TMS
     [Route("/tms/tobk1", "Get")]  //DriverCode=
     [Route("/tms/tobk1/update", "Post")] //
     [Route("/tms/tobk1/confirm", "Get")] //update?Key=,Remark=,TableName=
+    [Route("/tms/tobk1/PickupTimeUpdate", "Post")] 
+    
 
     public class Tobk : IReturn<CommonResponse>
     {
@@ -26,6 +28,7 @@ namespace WebApi.ServiceModel.TMS
         public string BookingNo { get; set; }
         public string JobNo { get; set; }
         public string DCDescription { get; set; }
+        public string ScheduleDateFlag { get; set; }
     }
     public class Tobk_Logic
     {
@@ -38,7 +41,7 @@ namespace WebApi.ServiceModel.TMS
             {
                 using (var db = DbConnectionFactory.OpenDbConnection("TMS"))
                 {
-                    string strTobk2BookingNo = "", strTobk1BookingNo="";
+                    string strTobk2BookingNo = "", strTobk1BookingNo="", strTobk1ScheduleDate="", strTobk2ScheduleDate = "", strTobk1CompletedFlag="",strTobk2CompleteFlag = "";
                     if (request.BookingNo != null && request.BookingNo != "" && request.LineItemNo != null && request.LineItemNo != "")
                     {
                         strTobk2BookingNo = "And Tobk2.BookingNo='" + request.BookingNo + "' And Tobk2.LineItemNo='" + request.LineItemNo + "'";
@@ -46,6 +49,20 @@ namespace WebApi.ServiceModel.TMS
 
                     
                     }
+                    if (request.ScheduleDateFlag != "N")
+                    {
+                        strTobk1ScheduleDate = " CONVERT(varchar(20),tobk1.ScheduleDate ,112)=(select convert(varchar(10),getdate(),112))   and ";
+                        strTobk2ScheduleDate = "  CONVERT(varchar(20), tobk2.ScheduleDate, 112) = (select convert(varchar(10), getdate(), 112))  and ";
+
+                    }
+                    else {
+                        strTobk1CompletedFlag = " CompletedFlag= 'N'AND ";
+                        strTobk2CompleteFlag = " CompleteFlag = 'N' AND ";
+                    }
+                      
+
+
+
                         string strSql = "";
                     strSql = "select * from ( select Tobk2.BookingNo as 'Key','Tobk2' as TableName,Tobk2.LineItemNo, Case Tobk1.JobType when 'CO' then 'Collection'" +
                                  "  when 'DE' then 'Delivery' when 'TP' then 'Transport' else '' end as DCFlag ,'' as UpdatedFlag ," +
@@ -70,8 +87,8 @@ namespace WebApi.ServiceModel.TMS
                                  " where rcbp1.BusinessPartyCode = Tobk2.ToLocationCode) End), '')  AS PhoneNumber," +
                                  "  isnull((select  AppHideScheduleTime  from topa1),'N') as AppHideScheduleTime ," +
                                  " Tobk2.JobSeqNo as JobSeqNo," +
-                                 " '' as UpdateRemarkFlag   from Tobk2 join Tobk1 on tobk1.BookingNo = Tobk2.BookingNo " +
-                                 " Where  CONVERT(varchar(20),tobk2.ScheduleDate ,112)=(select convert(varchar(10),getdate(),112)) and  Tobk2.DriverCode = '" + request.DriverCode + "' " +
+                                 " '' as UpdateRemarkFlag ,(select Top 1 jmjm3.DateTime from jmjm3  where jmjm3.jobno=Tobk1.JobNo and jmjm3.RefNo=Tobk2.LineItemNo  And jmjm3.Description='PICKUP' )  as DateTime  from Tobk2 join Tobk1 on tobk1.BookingNo = Tobk2.BookingNo " +
+                                 " Where "+strTobk2CompleteFlag + strTobk2ScheduleDate + "Tobk2.DriverCode = '" + request.DriverCode + "' " +
                                  "  " + strTobk2BookingNo + "" +                                
                     " UNION ALL  " +
                                  "  select Tobk1.BookingNo as 'Key','Tobk2' as TableName, 0 AS LineItemNo, Case Tobk1.JobType " +
@@ -89,8 +106,8 @@ namespace WebApi.ServiceModel.TMS
                                  "  Tobk1.DriverCode, CONVERT(varchar(20), Tobk1.ScheduleDate, 112) as FilterTime ,  " +
                                  "  Case Tobk1.JobType when 'CO' then 'PC ' + isnull(Tobk1.FromPostalCode, '') else 'PC ' + isnull(Tobk1.ToPostalCode, '') END as PostalCode,  " +
                                  "  Tobk1.NoOfPallet,isnull(Tobk1.OnBehalfName, '') as OnBehalfName,TotalPcs, isnull((Case Tobk1.JobType when 'CO' then(select top 1 case isnull(Rcbp1.Handphone1, '') when '' then isnull(Rcbp1.Telephone, '')  else Rcbp1.Handphone1 end   from rcbp1 where rcbp1.BusinessPartyCode = Tobk1.FromCode ) else (select top 1 case isnull(Rcbp1.Handphone1, '') when '' then isnull(Rcbp1.Telephone, '')  else Rcbp1.Handphone1 end   from rcbp1 where rcbp1.BusinessPartyCode = Tobk1.ToCode) End), '')  AS PhoneNumber, " +
-                                 "  isnull((select  AppHideScheduleTime  from topa1),'N') as AppHideScheduleTime , 0 as JobSeqNo, '' as UpdateRemarkFlag " +
-                                 "  from Tobk1  where CONVERT(varchar(20),tobk1.ScheduleDate ,112)=(select convert(varchar(10),getdate(),112)) and  Tobk1.DriverCode = '" + request.DriverCode + "'  " +
+                                 "  isnull((select  AppHideScheduleTime  from topa1),'N') as AppHideScheduleTime , 0 as JobSeqNo, '' as UpdateRemarkFlag ,(select Top 1 jmjm3.DateTime from jmjm3  where jmjm3.jobno=Tobk1.JobNo And jmjm3.Description='PICKUP' AND jmjm3.RefNo=0 )  as DateTime " +
+                                 "  from Tobk1  where "+ strTobk1CompletedFlag+ strTobk1ScheduleDate  + "   Tobk1.DriverCode = '" + request.DriverCode + "'  " +
                                  "  " + strTobk1BookingNo + " ) b ";
                     //if (request.BookingNo != null && request.BookingNo != "" && request.LineItemNo != null && request.LineItemNo != "") {
                     //    strSql = strSql + "And Tobk2.BookingNo='" + request.BookingNo + "' And Tobk2.LineItemNo='" + request.LineItemNo+"'";
@@ -166,6 +183,62 @@ namespace WebApi.ServiceModel.TMS
             return Result;
         }
 
+        public int updatePickupTime(Tobk request) {
+            int Result = -1;
+            try
+            {
+                using (var db = DbConnectionFactory.OpenDbConnection())
+                {
+                    if (request.UpdateAllString != null && request.UpdateAllString != "")
+                    {
+                        JArray ja = (JArray)JsonConvert.DeserializeObject(request.UpdateAllString);
+                        if (ja != null)
+                        {
+                            for (int i = 0; i < ja.Count(); i++)
+                            {
+                              
+                                string strKey = ja[i]["Key"].ToString();
+                                string strTobk2LineItemNo = ja[i]["LineItemNo"].ToString();              
+                                    string strJobNo = "";
+                                    if (ja[i]["JobNo"] != null || ja[i]["JobNo"].ToString() != "")
+                                        strJobNo = ja[i]["JobNo"].ToString();
+                                    if (strJobNo != "")
+                                    {
+                                        int intMaxLineItemNo = 1;
+                                        List<Jmjm3> list1 = db.Select<Jmjm3>("Select Max(LineItemNo) LineItemNo from Jmjm3 Where JobNo = " + Modfunction.SQLSafeValue(strJobNo));
+                                        if (list1 != null)
+                                        {
+                                            if (list1[0].LineItemNo > 0)
+                                                intMaxLineItemNo = list1[0].LineItemNo + 1;
+                                        }
+                                        db.Insert(new Jmjm3
+                                        {
+                                            JobNo = strJobNo,
+                                            DateTime = Convert.ToDateTime(ja[i]["DateTime"]),
+                                            UpdateDatetime = DateTime.Now,
+                                            RefNo = strTobk2LineItemNo,
+                                            LineItemNo = intMaxLineItemNo,                                         
+                                            StatusCode = "USE",
+                                            UpdateBy = ja[0]["DriverCode"] == null ? "" : Modfunction.SQLSafe(ja[0]["DriverCode"].ToString()),                                          
+                                            Description = "PICKUP"
+                                        });
+
+
+
+                               
+                             
+                                }
+                            
+
+                            }
+                            Result = 1;
+                        }
+                    }
+                }
+            }
+            catch { throw; }
+            return Result;
+        }
         public int UpdateAll_Tobk1(Tobk request)
         {
             int Result = -1;

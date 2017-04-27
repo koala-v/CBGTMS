@@ -17,7 +17,11 @@ app.controller( 'MainCtrl', [ '$scope', '$state', '$ionicPopup','PopupService',
             $state.go( 'jobListingList', {}, {} );
         };
         $scope.func_DC = function () {
-          PopupService.Info( null,'Stay Tuned' );
+          // PopupService.Info( null,'Stay Tuned' );
+       $state.go( 'agentjobListing', {}, {} );
+
+
+
         };
         $scope.func_Reports = function () {
               $state.go( 'dailycompleted', {}, {} );

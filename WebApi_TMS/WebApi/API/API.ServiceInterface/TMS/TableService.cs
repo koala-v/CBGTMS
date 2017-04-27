@@ -22,6 +22,10 @@ namespace WebApi.ServiceInterface.TMS
                 {
                     ecr.data.results = Tobk_Logic.UpdateAll_Tobk1(request);
                 }
+                else if (uri.IndexOf("/tms/tobk1/PickupTimeUpdate") > 0)
+                {
+                    ecr.data.results = Tobk_Logic.updatePickupTime(request);
+                }
                 else if (uri.IndexOf("/tms/tobk1") > 0)
                 {
                     ecr.data.results = Tobk_Logic.Get_Tobk1_List(request);

@@ -1,10 +1,147 @@
 'use strict';
-app.controller('agentCtrl', ['$scope', '$state', 'ApiService', '$cordovaSms', '$cordovaToast', '$ionicFilterBar', '$cordovaNetwork', 'ENV', 'SqlService',
-    function ($scope, $state, ApiService, $cordovaSms, $cordovaToast, $ionicFilterBar, $cordovaNetwork, ENV, SqlService) {
+app.controller('agentCtrl', ['ENV', '$scope', '$state', '$ionicLoading', '$ionicPopup', '$ionicFilterBar', '$ionicActionSheet', '$cordovaNetwork', 'ApiService', '$ionicPlatform', '$cordovaSQLite', '$timeout', 'SqlService',
+    function (ENV, $scope, $state, $ionicLoading, $ionicPopup, $ionicFilterBar, $ionicActionSheet, $cordovaNetwork, ApiService, $ionicPlatform, $cordovaSQLite, $timeout, SqlService) {
         var filterBarInstance = null;
-
         var dataResults = new Array();
-        var hmjmjm1 = new HashMap();
+        var hmTobk1 = new HashMap();
+        var getObjTobk1 = function (objTobk1) {
+            var jobs = {
+                key: objTobk1.Key,
+                LineItemNo: objTobk1.LineItemNo,
+                DCFlagWithPcsUom: objTobk1.DCFlag + ' ' + objTobk1.PcsUom,
+                // time: checkDatetime(objTobk1.TimeFrom),
+                time: is.not.equal(objTobk1.AppHideScheduleTime, 'Y') ? checkDatetime(objTobk1.TimeFrom) : 'S/No: ' + objTobk1.JobSeqNo,
+                timeFrom: moment(objTobk1.TimeFrom).format('YYYY-MM-DD').toString(),
+                PostalCode: objTobk1.PostalCode,
+                customer: {
+                    name: objTobk1.FromLocationName,
+                    address: objTobk1.FromLocationAddress1 + "  " + objTobk1.FromLocationAddress2 + "  " + objTobk1.FromLocationAddress3 + "  " + objTobk1.FromLocationAddress4,
+                    toAddress: objTobk1.ToLocationName + "  " + objTobk1.ToLocationAddress1 + "  " + objTobk1.ToLocationAddress2 + "  " + objTobk1.ToLocationAddress3 + "    " + objTobk1.ToLocationAddress4,
+                    statusAdress: getStatusAddress(objTobk1)
+                },
+                status: {
+                    //  inprocess: is.equal(objTobk1.StatusCode, 'POD') ? false : true,
+                    success: checkScheduleDate(objTobk1),
+                    // failed: is.equal(objTobk1.StatusCode, 'CANCEL') ? true : false,
+                }
+            };
+            return jobs;
+        };
+var checkScheduleDate=function(objTobk1){
+  if (moment(objTobk1.TimeFrom).format('YYYYMMDD')<moment(new Date()).format('YYYYMMDD')){
+    return true;
+  }else{
+    return false;
+  }
+
+};
+        var getStatusAddress = function (objTobk1) {
+            if ((objTobk1.FromLocationAddress1 + "  " + objTobk1.FromLocationAddress2 + "  " + objTobk1.FromLocationAddress3 + "  " + objTobk1.FromLocationAddress4).trim() === '' && (objTobk1.ToLocationName + "  " + objTobk1.ToLocationAddress1 + "  " + objTobk1.ToLocationAddress2 + "  " + objTobk1.ToLocationAddress3 + "    " + objTobk1.ToLocationAddress4).trim() === '') {
+                return false;
+            } else {
+                return true;
+            }
+
+        };
+        var getSignature = function (objAemp1Aido1) {
+            var objUri = ApiService.Uri(true, '/api/tms/tobk1/attach');
+            objUri.addSearch('Key', objAemp1Aido1.Key);
+            objUri.addSearch('LineItemNo', objAemp1Aido1.LineItemNo);
+            objUri.addSearch('TableName', objAemp1Aido1.TableName);
+            ApiService.Get(objUri, true).then(function success(result) {
+                if (is.not.undefined(result.data.results)) {
+                    $scope.signature = result.data.results;
+                    var Tobk1Filter = "Key='" + objAemp1Aido1.Key + "' and LineItemNo='" + objAemp1Aido1.LineItemNo + "' and TableName='" + objAemp1Aido1.TableName + "' "; // not record
+                    var objTobk1 = {
+                        TempBase64: $scope.signature
+                    };
+                    SqlService.Update('Tobk1Pending', objTobk1, Tobk1Filter).then(function (res) {});
+                }
+            });
+        };
+
+        var showTobk1 = function () {
+            if (!ENV.fromWeb) {
+                if ($cordovaNetwork.isOffline()) {
+                    ENV.wifi = false;
+                } else {
+                    ENV.wifi = true;
+
+                }
+            }
+
+            if (ENV.wifi === true) {
+
+                var strSqlFilter = " DriverCode='" + sessionStorage.getItem("sessionDriverCode") + "'"; // not record
+                SqlService.Select('Tobk1Pending', '*', strSqlFilter).then(function (results) {
+                    if (results.rows.length > 0) {
+                        for (var i = 0; i < results.rows.length; i++) {
+                            var Tobk1 = results.rows.item(i);
+                            hmTobk1.set(Tobk1.Key, Tobk1.Key);
+                        }
+                        var objUri = ApiService.Uri(true, '/api/tms/tobk1');
+                        objUri.addSearch('DriverCode', sessionStorage.getItem("sessionDriverCode"));
+                          objUri.addSearch('ScheduleDateFlag', 'N');
+                        ApiService.Get(objUri, true).then(function success(result) {
+                            var results = result.data.results;
+                            if (is.not.empty(results)) {
+                                for (var i = 0; i < results.length; i++) {
+                                    var objTobk1 = results[i];
+                                    var jobs = getObjTobk1(objTobk1);
+                                    dataResults = dataResults.concat(jobs);
+                                    $scope.jobs = dataResults;
+                                    if (!hmTobk1.has(objTobk1.Key)) {
+                                        SqlService.Insert('Tobk1Pending', objTobk1).then(function (res) {});
+                                        getSignature(objTobk1);
+                                    } else {
+                                        var objTobk1RmRemark = objTobk1;
+                                        var Tobk1filter = " Key='" + objTobk1.Key + "' and LineItemNo='" + objTobk1.LineItemNo + "'";
+                                        delete objTobk1RmRemark.Remark;
+                                        delete objTobk1RmRemark.Key;
+                                        delete objTobk1.__type;
+                                        SqlService.Update('Tobk1Pending', objTobk1RmRemark, Tobk1filter).then(function (res) {});
+
+                                    }
+                                }
+                            }
+                        });
+                    } else {
+                        var objUri = ApiService.Uri(true, '/api/tms/tobk1');
+                        objUri.addSearch('DriverCode', sessionStorage.getItem("sessionDriverCode"));
+                        objUri.addSearch('ScheduleDateFlag', 'N');
+                        ApiService.Get(objUri, true).then(function success(result) {
+                            var results = result.data.results;
+                            if (is.not.empty(results)) {
+                                for (var i = 0; i < results.length; i++) {
+                                    var objTobk1 = results[i];
+                                    var jobs = getObjTobk1(results[i]);
+                                    dataResults = dataResults.concat(jobs);
+                                    $scope.jobs = dataResults;
+                                    SqlService.Insert('Tobk1Pending', objTobk1).then(function (res) {});
+                                    getSignature(objTobk1);
+
+                                }
+                            }
+                        });
+                    }
+
+                });
+            } else {
+
+                var strSqlFilter = "  DriverCode='" + sessionStorage.getItem("sessionDriverCode") + "'"; // not record
+                SqlService.Select('Tobk1Pending', '*', strSqlFilter).then(function (results) {
+                    if (results.rows.length > 0) {
+                        for (var i = 0; i < results.rows.length; i++) {
+                            var objTobk1 = getObjTobk1(results.rows.item(i));
+                            dataResults = dataResults.concat(objTobk1);
+                        }
+                        $scope.jobs = dataResults;
+                    }
+                });
+            }
+        };
+
+        showTobk1();
 
         $scope.returnMain = function () {
             $state.go('index.login', {}, {
@@ -22,7 +159,7 @@ app.controller('agentCtrl', ['$scope', '$state', 'ApiService', '$cordovaSms', '$
             filterBarInstance = $ionicFilterBar.show({
                 items: $scope.jobs,
                 expression: function (filterText, value, index, array) {
-                    return value.JobNo.indexOf(filterText) > -1;
+                    return value.key.indexOf(filterText) > -1;
                 },
                 //filterProperties: ['bookingno'],
                 update: function (filteredItems, filterText) {
@@ -40,242 +177,16 @@ app.controller('agentCtrl', ['$scope', '$state', 'ApiService', '$cordovaSms', '$
                 filterBarInstance = null;
             }
             $timeout(function () {
+                //  showTobk1();
                 $scope.$broadcast('scroll.refreshComplete');
             }, 1000);
         };
 
-        $scope.goAgentDetail = function (job) {
-            $state.go('agentDetail', {
-                JobNo: job.JobNo,
+        $scope.gotoDetail = function (job) {
+            $state.go('jobListingDetail', {
+                'key': job.key,
+                'LineItemNo': job.LineItemNo
             }, {
-                reload: true
-            });
-        };
-
-        var getObjjmjm1 = function (Objjmjm1) {
-            var jobs = {
-                JobNo: Objjmjm1.JobNo,
-                ETA: Objjmjm1.ETA,
-                Pcs: Objjmjm1.Pcs,
-                ConsigneeName: Objjmjm1.ConsigneeName,
-                ActualArrivalDate: Objjmjm1.ActualArrivalDate,
-                DeliveryDate: Objjmjm1.DeliveryDate,
-            };
-            return jobs;
-        };
-
-        var showjmjm1 = function () {
-            if (!ENV.fromWeb) {
-                if (is.not.equal($cordovaNetwork.getNetwork(), 'wifi')) {
-                    ENV.wifi = false;
-                } else {
-                    ENV.wifi = true;
-                }
-            }
-            if (ENV.wifi === true) {
-                var strSqlFilter = "DeliveryAgentCode='" + sessionStorage.getItem("sessionAgentID") + "'"; // not record
-                SqlService.Select('Jmjm1', '*', strSqlFilter).then(function (results) {
-                    if (results.rows.length > 0) {
-                        for (var i = 0; i < results.rows.length; i++) {
-                            var jmjm1 = results.rows.item(i);
-                            hmjmjm1.set(jmjm1.JobNo, jmjm1.JobNo);
-
-                        }
-                        var objUri = ApiService.Uri(true, '/api/tms/jmjm1');
-                        objUri.addSearch('DeliveryAgentCode', sessionStorage.getItem("sessionAgentID"));
-                        ApiService.Get(objUri, true).then(function success(result) {
-                            var results = result.data.results;
-                            if (is.not.empty(results)) {
-                                for (var i = 0; i < results.length; i++) {
-                                    var objjmjm1 = results[i];
-                                    var jobs = getObjjmjm1(objjmjm1);
-                                    dataResults = dataResults.concat(jobs);
-                                    $scope.jobs = dataResults;
-                                    if (!hmjmjm1.has(objjmjm1.JobNo)) {
-                                        SqlService.Insert('jmjm1', objjmjm1).then(function (res) {});
-                                    }
-                                }
-                            }
-                        });
-                    } else {
-                        var objUri = ApiService.Uri(true, '/api/tms/jmjm1');
-                        objUri.addSearch('DeliveryAgentCode', sessionStorage.getItem("sessionAgentID"));
-                        ApiService.Get(objUri, true).then(function success(result) {
-                            var results = result.data.results;
-                            if (is.not.empty(results)) {
-                                for (var i = 0; i < results.length; i++) {
-                                    var objjmjm1 = results[i];
-                                    var jobs = getObjjmjm1(results[i]);
-                                    dataResults = dataResults.concat(jobs);
-                                    $scope.jobs = dataResults;
-                                    SqlService.Insert('jmjm1', objjmjm1).then(function (res) {});
-                                }
-                            }
-                        });
-                    }
-
-                });
-            } else {
-                var strSqlFilter = " DeliveryAgentCode='" + sessionStorage.getItem("sessionAgentID") + "'"; // not record
-                SqlService.Select('jmjm1', '*', strSqlFilter).then(function (results) {
-                    if (results.rows.length > 0) {
-                        for (var i = 0; i < results.rows.length; i++) {
-                            var objjmjm1 = getObjjmjm1(results.rows.item(i));
-                            dataResults = dataResults.concat(objjmjm1);
-                        }
-                        $scope.jobs = dataResults;
-                    }
-                });
-            }
-        };
-
-        showjmjm1();
-
-    }
-]);
-app.controller('agentDetailCtrl', ['$scope', '$state', 'ApiService', '$cordovaSms', '$cordovaToast', '$stateParams', '$ionicPlatform', 'SqlService', 'ionicDatePicker', 'ENV', '$cordovaNetwork', 'PopupService', 'ionicTimePicker',
-    function ($scope, $state, ApiService, $cordovaSms, $cordovaToast, $stateParams, $ionicPlatform, SqlService, ionicDatePicker, ENV, $cordovaNetwork, PopupService, ionicTimePicker) {
-        $scope.Detail = {
-            Jmjm1: {
-                JobNo: $stateParams.JobNo,
-                showActualArrivalDate: '',
-                showDeliveryDate: '',
-                showActualArrivalTime: '',
-                showDeliveryTime: ''
-            },
-
-        };
-
-        var checkDateTime = function (obj, type) {
-            if (obj === null) {
-                return '';
-            } else {
-                if (type === '0') {
-                    return obj.split(' ')[0];
-                } else if (type === '1') {
-                    if (obj.indexOf(' ') > 0) {
-                        return obj.split(' ')[1];
-                    } else {
-                        return '';
-                    }
-                }
-                return obj;
-            }
-        };
-        $ionicPlatform.ready(function () {
-            var strSqlFilter = "JobNo='" + $scope.Detail.Jmjm1.JobNo + "' ";
-            SqlService.Select('Jmjm1', '*', strSqlFilter).then(function (results) {
-                if (results.rows.length > 0) {
-                    var Objjmjm1 = results.rows.item(0);
-                    var Jmjm1 = {
-                        JobNo: Objjmjm1.JobNo,
-                        ETA: Objjmjm1.ETA,
-                        Pcs: Objjmjm1.Pcs,
-                        AwbBlNo: Objjmjm1.AwbBlNo,
-                        Address: Objjmjm1.Address,
-                        ConsigneeName: Objjmjm1.ConsigneeName,
-                        ActualArrivalDate: Objjmjm1.ActualArrivalDate,
-                        DeliveryDate: Objjmjm1.DeliveryDate,
-                        showActualArrivalDate: checkDateTime(Objjmjm1.ActualArrivalDate, '0'),
-                        showDeliveryDate: checkDateTime(Objjmjm1.DeliveryDate, '0'),
-                        showActualArrivalTime: checkDateTime(Objjmjm1.ActualArrivalDate, '1'),
-                        showDeliveryTime: checkDateTime(Objjmjm1.DeliveryDate, '1'),
-                    };
-                    $scope.Detail.Jmjm1 = Jmjm1;
-
-                }
-            });
-        });
-
-        $scope.OnTimePicker = function (Type) {
-            var ipObj1 = {
-                callback: function (val) { //Mandatory
-                    if (typeof (val) === 'undefined') {
-                        // console.log('Time not selected');
-                    } else {
-                        var selectedTime = new Date(val * 1000);
-                        // console.log('Selected epoch is : ', val, 'and the time is ', selectedTime.getUTCHours(), 'H :', selectedTime.getUTCMinutes(), 'M');
-                        var Time = '' + selectedTime.getUTCHours() + ':' + selectedTime.getUTCMinutes();
-                        if (is.equal(Type, 1)) {
-                            $scope.Detail.Jmjm1.showActualArrivalTime = Time;
-                        } else {
-                            $scope.Detail.Jmjm1.showDeliveryTime = Time;
-                        }
-                    }
-                },
-                inputTime: 50400, //Optional
-                format: 12, //Optional
-                step: 5, //Optional
-                setLabel: 'Set' //Optional
-            };
-
-            ionicTimePicker.openTimePicker(ipObj1);
-        };
-
-        $scope.OnDatePicker = function (Type) {
-            var ipObj1 = {
-                callback: function (val) { //Mandatory
-                    if (is.equal(Type, 1)) {
-                        $scope.Detail.Jmjm1.showActualArrivalDate = moment(new Date(val)).format('YYYY-MM-DD');
-                        $scope.Detail.Jmjm1.showActualArrivalTime = moment(new Date()).format('HH:mm');
-                    } else {
-                        $scope.Detail.Jmjm1.showDeliveryDate = moment(new Date(val)).format('YYYY-MM-DD');
-                        $scope.Detail.Jmjm1.showDeliveryTime = moment(new Date()).format('HH:mm');
-                    }
-                },
-
-            };
-            ionicDatePicker.openDatePicker(ipObj1);
-        };
-
-        $scope.gotoConfirm = function () {
-            var UpdatedValue = 'Y';
-            if (!ENV.fromWeb) {
-                if (is.not.equal($cordovaNetwork.getNetwork(), 'wifi')) {
-                    ENV.wifi = false;
-                    UpdatedValue = 'N';
-                } else {
-                    ENV.wifi = true;
-                }
-            }
-            var jmjm1Filter = "JobNo='" + $scope.Detail.Jmjm1.JobNo + "'"; // not record
-            $scope.Detail.Jmjm1.ActualArrivalDate = $scope.Detail.Jmjm1.showActualArrivalDate + ' ' + $scope.Detail.Jmjm1.showActualArrivalTime;
-            if (is.empty($scope.Detail.Jmjm1.showActualArrivalDate)) {
-                $scope.Detail.Jmjm1.ActualArrivalDate = null;
-            }
-            $scope.Detail.Jmjm1.DeliveryDate = $scope.Detail.Jmjm1.showDeliveryDate + ' ' + $scope.Detail.Jmjm1.showDeliveryTime;
-            if (is.empty($scope.Detail.Jmjm1.showDeliveryDate)) {
-                $scope.Detail.Jmjm1.DeliveryDate = null;
-            }
-
-            var objJmjm1 = {
-                ActualArrivalDate: $scope.Detail.Jmjm1.ActualArrivalDate,
-                DeliveryDate: $scope.Detail.Jmjm1.DeliveryDate,
-                UpdatedFlag: UpdatedValue
-            };
-            SqlService.Update('Jmjm1', objJmjm1, jmjm1Filter).then(function (res) {
-                if (UpdatedValue === 'Y' && is.not.undefined(res)) {
-                    var arrJmjm1 = [];
-                    arrJmjm1.push($scope.Detail.Jmjm1);
-                    var jsonData = {
-                        "confirmAllString": JSON.stringify(arrJmjm1)
-                    };
-                    var objUri = ApiService.Uri(true, '/api/tms/jmjm1/confirm');
-                    ApiService.Post(objUri, jsonData, true).then(function success(result) {
-                        PopupService.Info(null, 'Confirm Success', '').then(function (res) {
-                            $scope.returnList();
-                        });
-                    });
-                } else if (UpdatedValue === 'N') {
-                    PopupService.Info(null, 'Confirm Success', '').then(function (res) {
-                        $scope.returnList();
-                    });
-                }
-            });
-
-        };
-        $scope.returnList = function () {
-            $state.go('agentjobListing', {}, {
                 reload: true
             });
         };

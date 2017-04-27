@@ -14,7 +14,9 @@ app.controller('JoblistingListCtrl', ['ENV', '$scope', '$state', '$ionicLoading'
                 PostalCode: objTobk1.PostalCode,
                 customer: {
                     name: objTobk1.FromLocationName,
-                    address: objTobk1.FromLocationAddress1 + "  " + objTobk1.FromLocationAddress2 + "  " + objTobk1.FromLocationAddress3 + "  " + objTobk1.FromLocationAddress4 + "      " + objTobk1.ToLocationName + "  " + objTobk1.ToLocationAddress1 + "  " + objTobk1.ToLocationAddress2 + "  " + objTobk1.ToLocationAddress3 + "    " + objTobk1.ToLocationAddress4
+                    address: objTobk1.FromLocationAddress1 + "  " + objTobk1.FromLocationAddress2 + "  " + objTobk1.FromLocationAddress3 + "  " + objTobk1.FromLocationAddress4,
+                    toAddress: objTobk1.ToLocationName + "  " + objTobk1.ToLocationAddress1 + "  " + objTobk1.ToLocationAddress2 + "  " + objTobk1.ToLocationAddress3 + "    " + objTobk1.ToLocationAddress4,
+                    statusAdress: getStatusAddress(objTobk1)
                 },
                 status: {
                     inprocess: is.equal(objTobk1.StatusCode, 'POD') ? false : true,
@@ -25,6 +27,14 @@ app.controller('JoblistingListCtrl', ['ENV', '$scope', '$state', '$ionicLoading'
             return jobs;
         };
 
+        var getStatusAddress = function (objTobk1) {
+            if ((objTobk1.FromLocationAddress1 + "  " + objTobk1.FromLocationAddress2 + "  " + objTobk1.FromLocationAddress3 + "  " + objTobk1.FromLocationAddress4).trim() === '' && (objTobk1.ToLocationName + "  " + objTobk1.ToLocationAddress1 + "  " + objTobk1.ToLocationAddress2 + "  " + objTobk1.ToLocationAddress3 + "    " + objTobk1.ToLocationAddress4).trim() === '') {
+                return false;
+            } else {
+                return true;
+            }
+
+        };
         var getSignature = function (objAemp1Aido1) {
             var objUri = ApiService.Uri(true, '/api/tms/tobk1/attach');
             objUri.addSearch('Key', objAemp1Aido1.Key);
@@ -184,6 +194,7 @@ app.controller('JoblistingDetailCtrl', ['ENV', '$scope', '$state', '$ionicAction
                 Key: $stateParams.key,
                 LineItemNo: $stateParams.LineItemNo
             },
+            PickUpTime: ''
 
         };
 
@@ -245,6 +256,7 @@ app.controller('JoblistingDetailCtrl', ['ENV', '$scope', '$state', '$ionicAction
             SqlService.Select('Tobk1', '*', strSqlFilter).then(function (results) {
                 if (results.rows.length > 0) {
                     $scope.Detail.Tobk1 = results.rows.item(0);
+                    $scope.Detail.Tobk1.DateTime = checkDateTimeisEmpty($scope.Detail.Tobk1.DateTime);
                 }
             });
         });
@@ -267,7 +279,7 @@ app.controller('JoblistingDetailCtrl', ['ENV', '$scope', '$state', '$ionicAction
                 cameraDirection: Camera.Direction.BACK,
                 //popoverOptions: new CameraPopoverOptions(300, 300, 100, 100, Camera.PopoverArrowDirection.ARROW_ANY),
                 saveToPhotoAlbum: true
-                    //correctOrientation:true
+                //correctOrientation:true
             };
             try {
                 $cordovaCamera.getPicture(options).then(function (imageUri) {
@@ -380,6 +392,44 @@ app.controller('JoblistingDetailCtrl', ['ENV', '$scope', '$state', '$ionicAction
                 }
             });
         };
+
+        $scope.PickUpTime = function () {
+            if ($scope.Detail.Tobk1.DateTime === '') {
+                var PickUpTime = moment().format('DD MMM YYYY hh:mm A').toString();
+                var promptPopup = $ionicPopup.show({
+                    template: '',
+                    title: 'Pickup Time',
+                    subTitle: "Pickup at " + PickUpTime + " ?",
+                    scope: $scope,
+                    buttons: [{
+                        text: 'Cancel',
+                        onTap: function (e) {
+
+                        }
+                    }, {
+                        text: '<b>OK</b>',
+                        type: 'button-positive',
+                        onTap: function (e) {
+
+                            $scope.Detail.Tobk1.DateTime = PickUpTime;
+                            var arrTobk1 = [];
+                            arrTobk1.push($scope.Detail.Tobk1);
+                            var jsonData = {
+                                "UpdateAllString": JSON.stringify(arrTobk1)
+                            };
+                            var objUri = ApiService.Uri(true, '/api/tms/tobk1/PickupTimeUpdate');
+                            ApiService.Post(objUri, jsonData, true).then(function success(result) {
+                                PopupService.Info(null, 'Pickup  Success', '').then(function (res) {
+                                    //  $scope.returnList();
+                                });
+                            });
+                        }
+
+                    }]
+                });
+            }
+        };
+
         $scope.closeModal = function () {
             $scope.modal_camera.hide();
         };

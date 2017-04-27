@@ -22,7 +22,12 @@
                         </div>
                         <div class="col col-50">
                             <p><span ng-bind="job.customer.name" style="    white-space: normal;"></span></p>
-                            <p><span ng-bind="job.customer.address" style="    white-space: normal;"></span></p>
+                          <p><span ng-bind="job.customer.address" style="    white-space: normal;"></span></p>
+<div  ng-if="job.customer.statusAdress" >
+  <hr/>
+</div>
+<p><span ng-bind="job.customer.toAddress" style="    white-space: normal;"></span></p>
+
                         </div>
                         <i class="icon iconfont ion-android-done" ng-if="job.status.success" style="right:26px;"></i>
                         <i class="icon iconfont ion-android-refresh" ng-if="job.status.inprocess" style="right:26px;"></i>
