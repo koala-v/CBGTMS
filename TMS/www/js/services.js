@@ -164,13 +164,16 @@ appService.service('SqlService', ['$q', 'ENV', '$timeout', '$ionicLoading', '$co
                 }
             } else {
                 try {
+
                     db_sqlite = $cordovaSQLite.openDB({
                         name: ENV.sqlite.name,
                         location: ENV.sqlite.location
                     });
+                      console.log('aa');
                     deferred.resolve(db_sqlite);
                     //  this.Reset();
                 } catch (error) {
+                        console.log('bb');
                     deferred.reject(error);
                     console.error(error);
                 }

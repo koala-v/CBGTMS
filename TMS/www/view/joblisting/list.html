@@ -10,7 +10,7 @@
     </ion-header-bar>
     <ion-content>
         <div style="height: 43px;"></div>
-            <ion-refresher pulling-icon="ion-arrow-down-b" on-refresh="refreshItems()"></ion-refresher>
+        <ion-refresher pulling-icon="ion-arrow-down-b" on-refresh="refreshItems()"></ion-refresher>
         <div class="list">
             <ion-list can-swipe="true" tabindex="-1" id="div-list">
                 <ion-item nav-clear menu-close class="item item-icon-right" ng-repeat="job in jobs" ng-click="gotoDetail(job)">
@@ -22,11 +22,11 @@
                         </div>
                         <div class="col col-50">
                             <p><span ng-bind="job.customer.name" style="    white-space: normal;"></span></p>
-                          <p><span ng-bind="job.customer.address" style="    white-space: normal;"></span></p>
-<div  ng-if="job.customer.statusAdress" >
-  <hr/>
-</div>
-<p><span ng-bind="job.customer.toAddress" style="    white-space: normal;"></span></p>
+                            <p><span ng-bind="job.customer.address" style="    white-space: normal;"></span></p>
+                            <div ng-if="job.customer.statusAdress">
+                                <hr/>
+                            </div>
+                            <p><span ng-bind="job.customer.toAddress" style="    white-space: normal;"></span></p>
 
                         </div>
                         <i class="icon iconfont ion-android-done" ng-if="job.status.success" style="right:26px;"></i>

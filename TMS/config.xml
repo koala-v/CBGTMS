@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget id="com.sysfreight.Basis" version="1.0.1.9" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>TMS</name>
-  <description>
-        A Delivery App for JollyB.
+  <description>&#xD;
+        A Delivery App for JollyB.&#xD;
     </description>
-  <author email="vivlong@163.com" href="http://vivlong.github.com/">
-      James Liao
+  <author email="vivlong@163.com" href="http://vivlong.github.com/">&#xD;
+      James Liao&#xD;
     </author>
   <content src="index.html"/>
   <access origin="*"/>
   <allow-navigation href="http://*/*"/>
   <allow-navigation href="https://*/*"/>
   <allow-navigation href="data:*"/>
+  <allow-navigation href="http://192.168.0.229:8101"/>
+  <allow-navigation href="http://192.168.0.229:8100"/>
   <allow-intent href="http://*/*"/>
   <allow-intent href="https://*/*"/>
   <allow-intent href="sms:*"/>
@@ -26,7 +28,7 @@
   <preference name="SplashScreenDelay" value="3000"/>
   <preference name="xwalkVersion" value="19+"/>
   <preference name="xwalkCommandLine" value="--disable-pull-to-refresh-effect"/>
-   <preference name="AndroidPersistentFileLocation" value="Compatibility"/>
+  <preference name="AndroidPersistentFileLocation" value="Compatibility"/>
   <preference name="xwalkMode" value="embedded"/>
   <preference name="xwalkMultipleApk" value="true"/>
   <feature name="StatusBar">

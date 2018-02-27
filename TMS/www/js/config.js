@@ -2,9 +2,9 @@
 var appConfig = angular.module('TMS.config', []);
 appConfig.constant('ENV', {
     website: 'www.sysfreight.net/app/tms/basis',
-    api: 'www.sysfreight.net/apis/tms/basis',
+    // api: 'www.sysfreight.net/apis/tms/basis',
     // api: 'http://localhost:62787/',
-    //  api: 'localhost:2354',
+     api: 'localhost:2354',
     reset: {
         'website': 'www.sysfreight.net/app/tms/basis',
         'api': 'www.sysfreight.net/apis/tms/basis',
@@ -21,7 +21,7 @@ appConfig.constant('ENV', {
         name: 'AppTobkTms.db',
         location: 'default'
     },
-    port: '8081', // http port no
+    // port: '8081', // http port no
     ssl: false,
     debug: true,
     mock: false,

@@ -12,7 +12,8 @@ using ServiceStack;
 using System.Drawing.Imaging;
 using WebApi.ServiceModel.Utils;
 using System.IO;
-using System.Security.AccessControl;
+using System.Data.SqlClient;
+using System.Data;
 
 namespace WebApi.ServiceModel.TMS
 {
@@ -75,13 +76,48 @@ namespace WebApi.ServiceModel.TMS
                         {
                             byte[] arr = Convert.FromBase64String(base64s[1]);
                             using (MemoryStream ms = new MemoryStream(arr))
-                            {
+                            {                          
+                                using (var db = DbConnectionFactory.OpenDbConnection())
+                                {
+
+                                    string SQL = "";
+                                    string sqlConnection =  db.ConnectionString.ToString() ;
+                                    SqlConnection con = new SqlConnection(sqlConnection);
+                                    con.Open();
+                                    SQL = "Update Rcbp3 Set  NameCard = @bytes WHERE BusinessPartyCode ='SYSMAGIC' and lineItemNo = 1 ";
+                                    SqlCommand cmd = new SqlCommand(SQL.ToString(), con);
+                                    cmd.Parameters.Add("bytes", SqlDbType.Image);
+                                    cmd.Parameters["bytes"].Value = arr;
+                                    //cmd.Parameters.Add("@bytes", SqlDbType.Binary).Value = arr.ToArray();
+                                     cmd.ExecuteNonQuery();
+                                    con.Close();
+                            
+                                }
                                 Bitmap bmp = new Bitmap(ms);
+                                //bmp.Save(resultFile, System.Drawing.Imaging.ImageFormat.Png);
+                                int x = 0;
+                                int y = 0;
+                                for (int Xcount = 0; Xcount < bmp.Width; Xcount++)
+                                {
+                                    for (int Ycount = 0; Ycount < bmp.Height; Ycount++)
+                                    {
+                                       
+                                        x = Xcount;
+                                        y = Ycount;
+                                    }
+                                }
+
+                                
                                 bmp.Save(resultFile, System.Drawing.Imaging.ImageFormat.Png);
+
+                                bmp.SetPixel(x, y, Color.Cornsilk);
                                 //bmp.Save(txtFileName + ".bmp", ImageFormat.Bmp);
                                 //bmp.Save(txtFileName + ".gif", ImageFormat.Gif);
                                 //bmp.Save(txtFileName + ".png", ImageFormat.Png);
                                 i = 0;
+
+                            
+
                             }
                         }
                     }
